@@ -1,0 +1,10 @@
+C:\Users\krpac\source\repos\Bill\Bill\bin\Debug\Bill.exe.config
+C:\Users\krpac\source\repos\Bill\Bill\bin\Debug\Bill.exe
+C:\Users\krpac\source\repos\Bill\Bill\bin\Debug\Bill.pdb
+C:\Users\krpac\source\repos\Bill\Bill\obj\Debug\Bill.csproj.AssemblyReference.cache
+C:\Users\krpac\source\repos\Bill\Bill\obj\Debug\Bill.Form1.resources
+C:\Users\krpac\source\repos\Bill\Bill\obj\Debug\Bill.Properties.Resources.resources
+C:\Users\krpac\source\repos\Bill\Bill\obj\Debug\Bill.csproj.GenerateResource.cache
+C:\Users\krpac\source\repos\Bill\Bill\obj\Debug\Bill.csproj.CoreCompileInputs.cache
+C:\Users\krpac\source\repos\Bill\Bill\obj\Debug\Bill.exe
+C:\Users\krpac\source\repos\Bill\Bill\obj\Debug\Bill.pdb
