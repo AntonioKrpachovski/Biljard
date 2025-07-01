@@ -12,25 +12,36 @@ namespace Bill
 {
     public partial class Form1 : Form
     {
-        public List<Ball> balls;
+        public Scene scene;
         public Form1()
         {
-            InitializeComponent();
-            balls = new List<Ball>();
             
+            InitializeComponent();
+            this.Height = 750;
+            this.Width = 1300;
+            scene = new Scene(this.Width, this.Height);
+            Invalidate();
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false; // disables maximize button
+            
+
         }
 
         private void Form1_MouseClick(object sender, MouseEventArgs e)
         {
-            balls.Add(new Ball(e.Location.X, e.Location.Y, "10", Color.Green));
-            Invalidate();
+            
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            foreach (Ball ball in balls) {
-                ball.Draw(e.Graphics);
-            }
+            scene.Draw(e.Graphics);
+        }
+
+        private void Form1_Resize(object sender, EventArgs e)
+        {
+            /*scene.ScreenWidth = this.Width;
+            scene.ScreenHeight = this.Height;
+            Invalidate();*/
         }
     }
 }
