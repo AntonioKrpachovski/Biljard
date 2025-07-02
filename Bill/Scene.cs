@@ -24,10 +24,10 @@ namespace Bill
         {
             this.ScreenWidth = ScreenWidth;
             this.ScreenHeight = ScreenHeight;
-            this.TableWidth = (int)(ScreenWidth * 0.60);
+            this.TableWidth = (int)(ScreenWidth * 0.70);
             this.TableHeight = (int)(ScreenHeight * 0.60);
 
-            this.BlankSpaceWidth = (int)(ScreenWidth * 0.2);
+            this.BlankSpaceWidth = (int)(ScreenWidth * 0.15);
             this.BlankSpaceHeight = (int)(ScreenHeight * 0.2);
 
             this.konstantaHeight = 30; //const za poramnuvanje
@@ -60,8 +60,8 @@ namespace Bill
 
             Point TopLeft = points[0];
 
-            int BallRadius = (int)(0.03 * (TableWidth + TableHeight) / 2);
-            int BallX = (int)(TopLeft.X+TableWidth*0.6);
+            int BallRadius = 16;
+            int BallX = (int)(TopLeft.X+TableWidth*0.7);
             int BallY = (int)(TopLeft.Y + TableHeight/2);
 
             int InitialBallY = BallY;
@@ -111,23 +111,37 @@ namespace Bill
 
             Brush bGreen = new SolidBrush(Color.DarkGreen);
             Brush bBlack = new SolidBrush(Color.Black);
-            Pen pWhite = new Pen(Color.White, 2);
-            Brush bBrown = new SolidBrush(Color.Brown);
+            Pen pWhite = new Pen(Color.Green, 2);
+            Brush bBrown = new SolidBrush(Color.FromArgb(91, 52, 21));
 
-            int koef = 35;
+            int koef = 50;
             Point[] Edge =
             {
-                new Point(points[0].X-koef, points[0].Y-koef),
-                new Point(points[2].X+koef, points[2].Y-koef),
-                new Point(points[3].X+koef, points[3].Y+koef),
-                new Point(points[5].X-koef, points[5].Y+koef)
+                //new Point(points[0].X-koef, points[0].Y-koef),
+                //new Point(points[2].X+koef, points[2].Y-koef),
+                //new Point(points[3].X+koef, points[3].Y+koef),
+                //new Point(points[5].X-koef, points[5].Y+koef)
+                new Point(points[0].X-koef, points[0].Y),
+                new Point(points[0].X, points[0].Y-koef),
+                new Point(points[2].X, points[2].Y-koef),
+                new Point(points[2].X+koef, points[2].Y),
+                new Point(points[3].X+koef, points[3].Y),
+                new Point(points[3].X, points[3].Y+koef),
+                new Point(points[5].X, points[5].Y+koef),
+                new Point(points[5].X-koef, points[5].Y)
             };
             g.FillPolygon(bBrown, Edge);
+
+            foreach(Point point in points)
+            {
+                g.FillEllipse(bBrown, point.X-koef, point.Y-koef, koef*2, koef*2);
+            }
+
             g.FillPolygon(bGreen, points);
 
             holes = new List<Hole>();
 
-            int HoleRadius = (int)(0.05 * (TableWidth+TableHeight)/2);
+            int HoleRadius = (int)(0.045 * (TableWidth+TableHeight)/2);
 
             foreach (Point point in points)
             {
@@ -136,8 +150,8 @@ namespace Bill
                 holes.Add(hole);
             }
 
-            Point QuarerPointTop = new Point((int)(points[0].X + TableWidth / 4)+40, points[0].Y);
-            Point QuarerPointBottom = new Point((int)(points[0].X + TableWidth / 4)+40, points[3].Y);
+            Point QuarerPointTop = new Point((int)(points[0].X + TableWidth / 4), points[0].Y);
+            Point QuarerPointBottom = new Point((int)(points[0].X + TableWidth / 4), points[3].Y);
 
             g.DrawLine(pWhite, QuarerPointTop, QuarerPointBottom);
 

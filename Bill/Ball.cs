@@ -20,12 +20,12 @@ namespace Bill
         public float VelocityY = 0;
 
         public Color[] colors = {
-            Color.Yellow,
-            Color.Blue,
-            Color.Red,
-            Color.Purple,
-            Color.Orange,
-            Color.Green,
+            Color.FromArgb(249, 214, 23),
+            Color.FromArgb(32, 32, 185),
+            Color.FromArgb(198, 27, 27),
+            Color.FromArgb(85, 0, 128),
+            Color.FromArgb(242, 128, 21),
+            Color.FromArgb(66, 163, 66),
             Color.Maroon,
             Color.Black
         };
@@ -36,7 +36,7 @@ namespace Bill
             Number = number;
             this.radius = radius;
             if (Number <= 15) { 
-            BaseColor = colors[(Number-1)%8];
+                BaseColor = colors[(Number-1)%8];
             }
             else
             {
@@ -51,7 +51,7 @@ namespace Bill
             Brush bString = new SolidBrush(Color.Black);
             Brush bWhite = new SolidBrush(Color.White);
             Font f = new Font("Arial", (float)(radius * 0.6), FontStyle.Bold, GraphicsUnit.Pixel);
-            Pen p = new Pen(Color.Red, 2);
+            Pen p = new Pen(Color.FromArgb(198, 27, 27), 2);
 
 
             // Calculate position to center the text (so chatgpt e napraveno centriranje na textot vo topkite)
@@ -71,8 +71,8 @@ namespace Bill
                 g.FillEllipse(b, ballX - radius, ballY- (radius+8)/2, 2*radius,  radius+8);
             }
             if (Number < 16) {
-            g.FillEllipse(bWhite, ballX - (int)(radius * 0.5), ballY - (int)(radius * 0.5), radius, radius);
-            g.DrawString(stringNumber, f, bString, textX, textY);
+                g.FillEllipse(bWhite, ballX - (int)(radius * 0.5), ballY - (int)(radius * 0.5), radius, radius);
+                g.DrawString(stringNumber, f, bString, textX, textY);
             }
             else
             {
