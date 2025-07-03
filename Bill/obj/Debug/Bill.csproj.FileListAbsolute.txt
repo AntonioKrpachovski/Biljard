@@ -18,3 +18,13 @@ C:\Users\anama\OneDrive\Documents\Biljard-main\Bill\obj\Debug\Bill.csproj.Genera
 C:\Users\anama\OneDrive\Documents\Biljard-main\Bill\obj\Debug\Bill.csproj.CoreCompileInputs.cache
 C:\Users\anama\OneDrive\Documents\Biljard-main\Bill\obj\Debug\Bill.exe
 C:\Users\anama\OneDrive\Documents\Biljard-main\Bill\obj\Debug\Bill.pdb
+C:\Users\krpac\OneDrive\Desktop\BilljardMostReacent\Bill\bin\Debug\Bill.exe.config
+C:\Users\krpac\OneDrive\Desktop\BilljardMostReacent\Bill\bin\Debug\Bill.exe
+C:\Users\krpac\OneDrive\Desktop\BilljardMostReacent\Bill\bin\Debug\Bill.pdb
+C:\Users\krpac\OneDrive\Desktop\BilljardMostReacent\Bill\obj\Debug\Bill.csproj.AssemblyReference.cache
+C:\Users\krpac\OneDrive\Desktop\BilljardMostReacent\Bill\obj\Debug\Bill.Form1.resources
+C:\Users\krpac\OneDrive\Desktop\BilljardMostReacent\Bill\obj\Debug\Bill.Properties.Resources.resources
+C:\Users\krpac\OneDrive\Desktop\BilljardMostReacent\Bill\obj\Debug\Bill.csproj.GenerateResource.cache
+C:\Users\krpac\OneDrive\Desktop\BilljardMostReacent\Bill\obj\Debug\Bill.csproj.CoreCompileInputs.cache
+C:\Users\krpac\OneDrive\Desktop\BilljardMostReacent\Bill\obj\Debug\Bill.exe
+C:\Users\krpac\OneDrive\Desktop\BilljardMostReacent\Bill\obj\Debug\Bill.pdb

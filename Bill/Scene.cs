@@ -9,6 +9,7 @@ namespace Bill
 {
     public class Scene
     {
+        private Point lastMousePos;
         public List<Ball> balls = new List<Ball>();
         public List<Hole> holes = new List<Hole>();
         public int ScreenWidth;
@@ -20,6 +21,9 @@ namespace Bill
         public int konstantaHeight;
         public int konstantaWidth;
         public Point[] points;
+
+        public bool mouseDown = false;
+        public int power = 0;
         public Scene(int ScreenWidth, int ScreenHeight)
         {
             this.ScreenWidth = ScreenWidth;
@@ -54,7 +58,13 @@ namespace Bill
 
             populate();
         }
-
+        public void powerUp()
+        {
+            if(mouseDown && power<100)
+            {
+                power += 10;
+            }
+        }
         public void populate()
         {
 
@@ -92,10 +102,11 @@ namespace Bill
                 ball.radius = BallRadius;
             }
         }
-        public void Draw(Graphics g)
+        public void Draw(Graphics g, Point mousePos)
         {
             DrawTable(g);
             DrawBalls(g);
+            DrawCue(g, mousePos);
         }
 
         public void DrawBalls(Graphics g)
@@ -161,6 +172,61 @@ namespace Bill
             bBrown.Dispose();
            
         }
+        public void DrawCue(Graphics g, Point mousePos)
+        {
+            Ball cueBall = balls[15];
 
+            Point cueBallCenter = new Point(cueBall.ballX, cueBall.ballY);
+
+            Point currentPos;
+
+            if (mouseDown)
+            { 
+                currentPos = lastMousePos;
+            }
+            else
+            {
+                currentPos = mousePos;
+                lastMousePos = mousePos;
+            }
+
+            int dx = currentPos.X - cueBallCenter.X;
+            int dy = currentPos.Y - cueBallCenter.Y;
+            if (dx == 0 && dy == 0)
+            {
+                dx = 1; 
+            }
+            double length = Math.Sqrt(dx * dx + dy * dy);
+
+            double nx = dx / length;
+            double ny = dy / length;
+
+            int offsetFromBall = 20 + power;
+            int cueLength = 425;
+
+            PointF tipPoint = new PointF(
+                cueBallCenter.X - (float)(nx * offsetFromBall),
+                cueBallCenter.Y - (float)(ny * offsetFromBall)
+            );
+
+            PointF basePoint = new PointF(
+                tipPoint.X - (float)(nx * cueLength),
+                tipPoint.Y - (float)(ny * cueLength)
+            );
+
+            PointF midPoint = new PointF(
+                tipPoint.X - (float)(nx * (cueLength * 0.7)),
+                tipPoint.Y - (float)(ny * (cueLength * 0.7))
+            );
+
+            Pen tipPen = new Pen(Color.BurlyWood, 7);
+            g.DrawLine(tipPen, tipPoint, midPoint);
+
+            Pen basePen = new Pen(Color.SaddleBrown, 8);
+            g.DrawLine(basePen, midPoint, basePoint);
+
+            tipPen.Dispose();
+            basePen.Dispose();
+        }
     }
 }

@@ -51,7 +51,7 @@ namespace Bill
             Brush bString = new SolidBrush(Color.Black);
             Brush bWhite = new SolidBrush(Color.White);
             Font f = new Font("Arial", (float)(radius * 0.6), FontStyle.Bold, GraphicsUnit.Pixel);
-            Pen p = new Pen(Color.FromArgb(198, 27, 27), 2);
+            Pen p = new Pen(Color.FromArgb(198, 27, 27), 1);
 
 
             // Calculate position to center the text (so chatgpt e napraveno centriranje na textot vo topkite)
@@ -77,7 +77,7 @@ namespace Bill
             else
             {
                 g.FillEllipse(bWhite, ballX - radius, ballY - radius, 2 * radius, 2 * radius);
-                g.DrawEllipse(p, (int)(ballX - radius * 0.15), (int)(ballY - radius * 0.15), (int)(radius * 0.3), (int)(radius * 0.3));
+                g.DrawEllipse(p, (int)(ballX - radius * 0.15)+1, (int)(ballY - radius * 0.15)+1, (int)(radius * 0.3), (int)(radius * 0.3));
             }
             p.Dispose();
             f.Dispose();
