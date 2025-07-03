@@ -16,8 +16,8 @@ namespace Bill
         public int Number { get; set; }
         public Color BaseColor { get; set; }
         public int radius { get; set; }
-        public float VelocityX = 0;
-        public float VelocityY = 0;
+        public double VelocityX = 0;
+        public double VelocityY = 0;
 
         public Color[] colors = {
             Color.FromArgb(249, 214, 23),
@@ -84,6 +84,23 @@ namespace Bill
             b.Dispose();
             bString.Dispose();
             bWhite.Dispose();
+        }
+        public void Move()
+        {
+            ballX += (int)VelocityX;
+            ballY += (int)VelocityY;
+
+            VelocityX *= 0.98;
+            VelocityY *= 0.98;
+
+            if (Math.Abs(VelocityX) <= 1)
+            {
+                VelocityX = 0;
+            }
+            if(Math.Abs(VelocityY) <= 1)
+            {
+                VelocityY = 0;
+            }
         }
     }
 }

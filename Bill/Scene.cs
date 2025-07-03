@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Bill
 {
@@ -23,6 +24,7 @@ namespace Bill
         public Point[] points;
 
         public bool mouseDown = false;
+        public bool moving = false;
         public int power = 0;
         public Scene(int ScreenWidth, int ScreenHeight)
         {
@@ -60,6 +62,9 @@ namespace Bill
         }
         public void powerUp()
         {
+            if (moving) {
+                return;
+            }
             if(mouseDown && power<100)
             {
                 power += 10;
@@ -174,6 +179,10 @@ namespace Bill
         }
         public void DrawCue(Graphics g, Point mousePos)
         {
+            if (moving)
+            {
+                return;
+            }
             Ball cueBall = balls[15];
 
             Point cueBallCenter = new Point(cueBall.ballX, cueBall.ballY);
@@ -227,6 +236,43 @@ namespace Bill
 
             tipPen.Dispose();
             basePen.Dispose();
+        }
+        public void Strike()
+        {
+            if (moving) { // staveno samo poradi power=0, prethodno ako kliknes za vreme na dvizenje togas power se setira na 0 i pravi problem
+                return;
+            }
+            Ball cueBall = balls[15];
+
+            Point cueBallCenter = new Point(cueBall.ballX, cueBall.ballY);
+
+            int dx = lastMousePos.X - cueBallCenter.X;
+            int dy = lastMousePos.Y - cueBallCenter.Y;
+            if (dx == 0 && dy == 0)
+            {
+                dx = 1;
+            }
+            double length = Math.Sqrt(dx * dx + dy * dy);
+
+            double nx = dx / length;
+            double ny = dy / length;
+
+            cueBall.VelocityX = nx * power * 0.25; // koeficient poradi sto 100 px na sekunda da se dvizi topka, ednostavno ne izgleda dobro :D
+            cueBall.VelocityY = ny * power * 0.25;
+            power = 0;
+        }
+        public void CheckIfMoving()
+        {
+            foreach (Ball ball in balls)
+            {
+                if (ball.VelocityX != 0 || ball.VelocityY != 0) {
+                    moving = true;
+                }
+                else
+                {
+                    moving = false;
+                }
+            }
         }
     }
 }

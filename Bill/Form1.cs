@@ -25,7 +25,7 @@ namespace Bill
             scene = new Scene(this.Width, this.Height);
             Invalidate();
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false; // disables maximize button
+            this.MaximizeBox = false; // disables maximize button, napraveno so pomosh na ChatGPT
             timer1.Start();
 
         }
@@ -61,7 +61,8 @@ namespace Bill
         private void Form1_MouseUp(object sender, MouseEventArgs e)
         {
             scene.mouseDown = false;
-            scene.power = 0;
+            scene.Strike();
+            
         }
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
@@ -72,6 +73,11 @@ namespace Bill
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            scene.CheckIfMoving();
+            foreach (Ball ball in scene.balls)
+            {
+                ball.Move();
+            }
             scene.powerUp();
             Invalidate();
         }
