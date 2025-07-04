@@ -10,14 +10,18 @@ namespace Bill
 {
     public class Ball
     {
-        public int ballX { get; set; }
-        public int ballY { get; set; }
+        public double ballX { get; set; }
+        public double ballY { get; set; }
         
         public int Number { get; set; }
         public Color BaseColor { get; set; }
         public int radius { get; set; }
         public double VelocityX = 0;
         public double VelocityY = 0;
+        public bool fallen = false;
+
+        public Point[] points { get; set; }
+
 
         public Color[] colors = {
             Color.FromArgb(249, 214, 23),
@@ -29,7 +33,7 @@ namespace Bill
             Color.Maroon,
             Color.Black
         };
-        public Ball(int ballX, int ballY, int number, int radius)
+        public Ball(double ballX, double ballY, int number, int radius, Point[] points)
         {
             this.ballX = ballX;
             this.ballY = ballY;
@@ -42,6 +46,7 @@ namespace Bill
             {
                 BaseColor = Color.White;
             }
+            this.points = points;
         }
         public void Draw(Graphics g) {
 
@@ -60,24 +65,24 @@ namespace Bill
             SizeF textSize = g.MeasureString(stringNumber, f);
 
             
-            float textX = ballX - textSize.Width / 2;
-            float textY = ballY - textSize.Height / 2;
+            double textX = ballX - textSize.Width / 2;
+            double textY = ballY - textSize.Height / 2;
             if (Number <= 8)
             {
-                g.FillEllipse(b, ballX - radius, ballY - radius, 2 * radius, 2 * radius);
+                g.FillEllipse(b, (float)ballX - radius, (float)ballY - radius, 2 * radius, 2 * radius);
             }
             if (Number > 8 && Number < 16) {
-                g.FillEllipse(bWhite, ballX - radius, ballY - radius, 2 * radius, 2 * radius);
-                g.FillEllipse(b, ballX - radius, ballY- (radius+8)/2, 2*radius,  radius+8);
+                g.FillEllipse(bWhite, (float)ballX - radius, (float)ballY - radius, 2 * radius, 2 * radius);
+                g.FillEllipse(b, (float)ballX - (float)radius, (float)ballY - (float)((radius+8)/2), 2*radius,  radius+8);
             }
             if (Number < 16) {
-                g.FillEllipse(bWhite, ballX - (int)(radius * 0.5), ballY - (int)(radius * 0.5), radius, radius);
-                g.DrawString(stringNumber, f, bString, textX, textY);
+                g.FillEllipse(bWhite, (float)ballX - (float)(radius * 0.5), (float)ballY - (float)(radius * 0.5), radius, radius);
+                g.DrawString(stringNumber, f, bString, (float)textX, (float)textY);
             }
             else
             {
-                g.FillEllipse(bWhite, ballX - radius, ballY - radius, 2 * radius, 2 * radius);
-                g.DrawEllipse(p, (int)(ballX - radius * 0.15)+1, (int)(ballY - radius * 0.15)+1, (int)(radius * 0.3), (int)(radius * 0.3));
+                g.FillEllipse(bWhite, (float)ballX - radius, (float)ballY - radius, 2 * radius, 2 * radius);
+                g.DrawEllipse(p, (float)ballX - radius * 0.15f+1, ((float)ballY - radius * 0.15f)+1, radius * 0.3f, radius * 0.3f);
             }
             p.Dispose();
             f.Dispose();
@@ -87,19 +92,38 @@ namespace Bill
         }
         public void Move()
         {
-            ballX += (int)VelocityX;
-            ballY += (int)VelocityY;
+            ballX += VelocityX;
+            ballY += VelocityY;
 
             VelocityX *= 0.98;
             VelocityY *= 0.98;
 
-            if (Math.Abs(VelocityX) <= 1)
+            if (Math.Abs(VelocityX) <= 0.05)
             {
                 VelocityX = 0;
             }
-            if(Math.Abs(VelocityY) <= 1)
+            if (Math.Abs(VelocityY) <= 0.05)
             {
                 VelocityY = 0;
+            }
+
+            foreach (Point point in points)
+            {
+                if (Math.Abs(ballX - point.X) < 30 && Math.Abs(ballY - point.Y) < 30) // dovolno e centarot na masa da e vo dupka za da padne
+                {
+                    VelocityX = 0;
+                    VelocityY = 0;
+                    fallen = true;
+                }
+            }
+
+            if (ballX - radius < points[0].X ||  ballX + radius > points[3].X)
+            {
+                VelocityX *= -1;
+            }
+            if (ballY - radius < points[0].Y || ballY + radius > points[3].Y)
+            {
+                VelocityY *= -1;
             }
         }
     }

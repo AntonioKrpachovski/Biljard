@@ -76,10 +76,10 @@ namespace Bill
             Point TopLeft = points[0];
 
             int BallRadius = 16;
-            int BallX = (int)(TopLeft.X+TableWidth*0.7);
-            int BallY = (int)(TopLeft.Y + TableHeight/2);
+            double BallX = TopLeft.X+TableWidth*0.7;
+            double BallY = TopLeft.Y + TableHeight/2;
 
-            int InitialBallY = BallY;
+            double InitialBallY = BallY;
 
             int konstantaNaPomestuvanje = (int)(BallRadius * Math.Sqrt(3))+3;
             int counter = 1;
@@ -88,14 +88,14 @@ namespace Bill
                 
                 for (int j = 0; j < i; j++)
                 {
-                    balls.Add(new Ball(BallX, BallY, counter, BallRadius));
+                    balls.Add(new Ball(BallX, BallY, counter, BallRadius, points));
                     counter++;
                     BallY = BallY - 2 * BallRadius;
                 }
                 BallY = InitialBallY + BallRadius * i;
                 BallX += konstantaNaPomestuvanje;
             }
-            balls.Add(new Ball((int)(TopLeft.X + TableWidth / 6), InitialBallY, 16, BallRadius));
+            balls.Add(new Ball((TopLeft.X + TableWidth / 6), InitialBallY, 16, BallRadius, points));
         }
         
         public void resizeBalls()
@@ -118,7 +118,7 @@ namespace Bill
         {
             foreach (Ball ball in balls)
             {
-                ball.Draw(g);
+                if (!ball.fallen) ball.Draw(g);
             }
         }
         public void DrawTable(Graphics g)
@@ -133,10 +133,6 @@ namespace Bill
             int koef = 50;
             Point[] Edge =
             {
-                //new Point(points[0].X-koef, points[0].Y-koef),
-                //new Point(points[2].X+koef, points[2].Y-koef),
-                //new Point(points[3].X+koef, points[3].Y+koef),
-                //new Point(points[5].X-koef, points[5].Y+koef)
                 new Point(points[0].X-koef, points[0].Y),
                 new Point(points[0].X, points[0].Y-koef),
                 new Point(points[2].X, points[2].Y-koef),
@@ -157,7 +153,8 @@ namespace Bill
 
             holes = new List<Hole>();
 
-            int HoleRadius = (int)(0.045 * (TableWidth+TableHeight)/2);
+            //int HoleRadius = (int)(0.045 * (TableWidth+TableHeight)/2);
+            int HoleRadius = 30;
 
             foreach (Point point in points)
             {
@@ -183,9 +180,16 @@ namespace Bill
             {
                 return;
             }
+
             Ball cueBall = balls[15];
 
-            Point cueBallCenter = new Point(cueBall.ballX, cueBall.ballY);
+            if (cueBall.fallen)
+            {
+                // TO DO: da se vrati topkata na pocetok i da se odzemat poeni
+                return;
+            }
+
+            Point cueBallCenter = new Point((int)cueBall.ballX, (int)cueBall.ballY);
 
             Point currentPos;
 
@@ -242,9 +246,10 @@ namespace Bill
             if (moving) { // staveno samo poradi power=0, prethodno ako kliknes za vreme na dvizenje togas power se setira na 0 i pravi problem
                 return;
             }
+
             Ball cueBall = balls[15];
 
-            Point cueBallCenter = new Point(cueBall.ballX, cueBall.ballY);
+            Point cueBallCenter = new Point((int)cueBall.ballX, (int)cueBall.ballY);
 
             int dx = lastMousePos.X - cueBallCenter.X;
             int dy = lastMousePos.Y - cueBallCenter.Y;
@@ -257,8 +262,8 @@ namespace Bill
             double nx = dx / length;
             double ny = dy / length;
 
-            cueBall.VelocityX = nx * power * 0.25; // koeficient poradi sto 100 px na sekunda da se dvizi topka, ednostavno ne izgleda dobro :D
-            cueBall.VelocityY = ny * power * 0.25;
+            cueBall.VelocityX = nx * power * 0.3; // koeficient poradi sto 100 px na sekunda da se dvizi topka, ednostavno ne izgleda dobro :D
+            cueBall.VelocityY = ny * power * 0.3;
             power = 0;
         }
         public void CheckIfMoving()
