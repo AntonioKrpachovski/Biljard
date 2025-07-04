@@ -22,10 +22,13 @@ namespace Bill
         public int konstantaHeight;
         public int konstantaWidth;
         public Point[] points;
+        public Point[] quarterPoints;
 
         public bool mouseDown = false;
         public bool moving = false;
         public int power = 0;
+        public bool cueBallPlaced = false;
+        public bool firstHit = true;
         public Scene(int ScreenWidth, int ScreenHeight)
         {
             this.ScreenWidth = ScreenWidth;
@@ -46,6 +49,7 @@ namespace Bill
             Point BottomRight = new Point((int)(TableWidth + BlankSpaceWidth - konstantaWidth), (int)(TableHeight + BlankSpaceHeight - konstantaHeight));
             Point MiddleTop = new Point((int)((TableWidth + BlankSpaceWidth - konstantaWidth) + (ScreenWidth - TableWidth - BlankSpaceWidth - konstantaWidth)) / 2, (int)(ScreenHeight - TableHeight - BlankSpaceHeight - konstantaHeight));
             Point MiddleBottom = new Point((int)((TableWidth + BlankSpaceWidth - konstantaWidth) + (ScreenWidth - TableWidth - BlankSpaceWidth - konstantaWidth)) / 2, (int)(TableHeight + BlankSpaceHeight - konstantaHeight));
+            
 
             Point[] tocki =
             {
@@ -58,6 +62,16 @@ namespace Bill
             };
             this.points = tocki;
 
+            Point QuarterPointTop = new Point((int)(points[0].X + TableWidth / 4), points[0].Y);
+            Point QuarterPointBottom = new Point((int)(points[0].X + TableWidth / 4), points[3].Y);
+
+            Point[] tocki2 =
+            {
+                QuarterPointTop,
+                QuarterPointBottom
+            };
+            this.quarterPoints = tocki2;
+
             populate();
         }
         public void powerUp()
@@ -65,7 +79,7 @@ namespace Bill
             if (moving) {
                 return;
             }
-            if(mouseDown && power<100)
+            if(mouseDown && power<100 && !cueBallPlaced)
             {
                 power += 10;
             }
@@ -95,9 +109,73 @@ namespace Bill
                 BallY = InitialBallY + BallRadius * i;
                 BallX += konstantaNaPomestuvanje;
             }
-            balls.Add(new Ball((TopLeft.X + TableWidth / 6), InitialBallY, 16, BallRadius, points));
+            balls.Add(new Ball(TopLeft.X + TableWidth / 6, InitialBallY, 16, BallRadius, points));
+            balls[15].fallen = true;
         }
-        
+
+        public bool placeCueBall(Point mousePos)
+        {
+            Ball cueBall = balls[15];
+            if (cueBall.fallen && !cueBallPlaced)
+            {
+                if (!IsPlacable(mousePos, cueBall.radius))
+                {
+                    return false;
+                }
+                if (firstHit)
+                {
+                    if (mousePos.X + cueBall.radius > points[0].X &&
+                        mousePos.X + cueBall.radius < quarterPoints[1].X
+                        && mousePos.Y + cueBall.radius > points[0].Y
+                        && mousePos.Y + cueBall.radius < quarterPoints[1].Y)
+                    {
+                        cueBall.ballX = mousePos.X;
+                        cueBall.ballY = mousePos.Y;
+                        cueBall.fallen = false;
+                        firstHit = false;
+                        return true;
+                    }
+                    else return false;
+                }
+                else
+                {
+                    cueBall.ballX = mousePos.X;
+                    cueBall.ballY = mousePos.Y;
+                    cueBall.fallen = false;
+                    return true;
+                }  
+            }
+            return false;
+        }
+
+        public bool IsPlacable(Point mousePos, int radius)
+        {
+            foreach (Hole hole in holes)
+            {
+                if (((mousePos.X - hole.holeX) * (mousePos.X - hole.holeX) + (mousePos.Y - hole.holeY) * (mousePos.Y - hole.holeY) <= 4 * radius * hole.radius))
+                    return false;
+            }
+
+            foreach (Ball ball in balls)
+            {
+                if (((mousePos.X - ball.ballX) * (mousePos.X - ball.ballX) + (mousePos.Y - ball.ballY) * (mousePos.Y - ball.ballY) <= 4 * radius * ball.radius))
+                    return false;
+            }
+            if (mousePos.X - radius <= points[0].X ||
+                mousePos.X + radius >= points[3].X ||
+                mousePos.Y - radius <= points[0].Y ||
+                mousePos.Y + radius >= points[3].Y)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public bool CollidesWith(Ball b1, Ball b2)
+        {
+            return !((b1.ballX - b2.ballX) * (b1.ballX - b2.ballX) + (b1.ballY - b2.ballY) * (b1.ballY - b2.ballY) <= 4 * b1.radius * b2.radius);
+        }
+
         public void resizeBalls()
         {
             
@@ -163,10 +241,7 @@ namespace Bill
                 holes.Add(hole);
             }
 
-            Point QuarerPointTop = new Point((int)(points[0].X + TableWidth / 4), points[0].Y);
-            Point QuarerPointBottom = new Point((int)(points[0].X + TableWidth / 4), points[3].Y);
-
-            g.DrawLine(pWhite, QuarerPointTop, QuarerPointBottom);
+            g.DrawLine(pWhite, quarterPoints[0], quarterPoints[1]);
 
             bGreen.Dispose();
             bBlack.Dispose();
@@ -185,7 +260,6 @@ namespace Bill
 
             if (cueBall.fallen)
             {
-                // TO DO: da se vrati topkata na pocetok i da se odzemat poeni
                 return;
             }
 
@@ -193,7 +267,7 @@ namespace Bill
 
             Point currentPos;
 
-            if (mouseDown)
+            if (mouseDown && !cueBallPlaced)
             { 
                 currentPos = lastMousePos;
             }

@@ -61,13 +61,13 @@ namespace Bill
         private void Form1_MouseUp(object sender, MouseEventArgs e)
         {
             scene.mouseDown = false;
-            scene.Strike();
-            
+            if (!scene.cueBallPlaced) scene.Strike();
         }
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
             scene.mouseDown = true;
+            scene.cueBallPlaced = scene.placeCueBall(mousePos);
             Invalidate();
         }
 
@@ -78,7 +78,10 @@ namespace Bill
             {
                 ball.Move();
             }
-            scene.powerUp();
+            if (!scene.firstHit)
+            {
+                scene.powerUp();
+            }
             Invalidate();
         }
     }

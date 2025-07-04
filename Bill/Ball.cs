@@ -117,12 +117,24 @@ namespace Bill
                 }
             }
 
-            if (ballX - radius < points[0].X ||  ballX + radius > points[3].X)
+            if (ballX - radius < points[0].X)
             {
+                ballX = points[0].X + radius;
                 VelocityX *= -1;
             }
-            if (ballY - radius < points[0].Y || ballY + radius > points[3].Y)
+            if (ballX + radius > points[3].X)
             {
+                ballX = points[3].X - radius;
+                VelocityX *= -1;
+            }
+            if (ballY - radius < points[0].Y)
+            {
+                ballY = points[0].Y + radius;
+                VelocityY *= -1;
+            }
+            if (ballY + radius > points[3].Y)
+            {
+                ballY = points[3].Y - radius;
                 VelocityY *= -1;
             }
         }
