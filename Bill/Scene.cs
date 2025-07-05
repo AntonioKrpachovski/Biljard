@@ -158,7 +158,7 @@ namespace Bill
 
             foreach (Ball ball in balls)
             {
-                if (((mousePos.X - ball.ballX) * (mousePos.X - ball.ballX) + (mousePos.Y - ball.ballY) * (mousePos.Y - ball.ballY) <= 4 * radius * ball.radius))
+                if ((mousePos.X - ball.ballX) * (mousePos.X - ball.ballX) + (mousePos.Y - ball.ballY) * (mousePos.Y - ball.ballY) <= 4 * radius * ball.radius)
                     return false;
             }
             if (mousePos.X - radius <= points[0].X ||
@@ -306,11 +306,34 @@ namespace Bill
                 tipPoint.Y - (float)(ny * (cueLength * 0.7))
             );
 
+            PointF guideLinePoint = new PointF(
+                cueBallCenter.X + (float)(nx * 20),
+                cueBallCenter.Y + (float)(ny * 20)
+            );
+
             Pen tipPen = new Pen(Color.BurlyWood, 7);
             g.DrawLine(tipPen, tipPoint, midPoint);
 
             Pen basePen = new Pen(Color.SaddleBrown, 8);
             g.DrawLine(basePen, midPoint, basePoint);
+
+            PointF ghostBall = new PointF((float)guideLinePoint.X + (float)(nx * 20), (float)guideLinePoint.Y + (float)(ny * 20));
+
+            if (!((currentPos.X - cueBall.ballX) * (currentPos.X - cueBall.ballX) + (currentPos.Y - cueBall.ballY) * (currentPos.Y - cueBall.ballY) <= 4 * cueBall.radius * cueBall.radius))
+            {
+                while (IsPlacable(new Point((int)ghostBall.X, (int)ghostBall.Y), cueBall.radius))
+                {
+                    ghostBall.X += (float)(nx);
+                    ghostBall.Y += (float)(ny);
+                }
+
+                Pen linePen = new Pen(Color.White, 3);
+                linePen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+                g.DrawLine(linePen, guideLinePoint, ghostBall);
+                g.DrawEllipse(linePen, ghostBall.X - cueBall.radius, ghostBall.Y - cueBall.radius, cueBall.radius * 2, cueBall.radius * 2);
+
+                linePen.Dispose();
+            }
 
             tipPen.Dispose();
             basePen.Dispose();

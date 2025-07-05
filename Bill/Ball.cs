@@ -48,7 +48,9 @@ namespace Bill
             }
             this.points = points;
         }
-        public void Draw(Graphics g) {
+
+        public void Draw(Graphics g)
+        {
 
             String stringNumber = Number.ToString();
 
