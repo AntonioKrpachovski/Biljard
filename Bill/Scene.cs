@@ -346,10 +346,61 @@ namespace Bill
             {
                 if (ball.VelocityX != 0 || ball.VelocityY != 0) {
                     moving = true;
+                    return;
                 }
                 else
                 {
                     moving = false;
+                }
+            }
+        }
+        public void HandleBallCollisions()
+        {
+            for (int i = 0; i < balls.Count; i++)
+            {
+                Ball b1 = balls[i];
+                if (b1.fallen) 
+                { 
+                    continue;
+                }
+
+                for (int j = i + 1; j < balls.Count; j++)
+                {
+                    Ball b2 = balls[j];
+                    if (b2.fallen) 
+                    {
+                        continue;
+                    }
+                    double dx = b2.ballX - b1.ballX;
+                    double dy = b2.ballY - b1.ballY;
+                    double distance = Math.Sqrt(dx * dx + dy * dy);
+                    double collisionDistance = b1.radius + b2.radius;
+
+                    if (distance < collisionDistance && distance > 0.01)
+                    {
+                        //оверлап е направено со помош на ChatGPT, направено за да не може 2 топки да бидат една врз друга
+                        double overlap = 0.5 * (collisionDistance - distance);
+                        double nx = dx / distance;
+                        double ny = dy / distance;
+
+                        b1.ballX -= nx * overlap;
+                        b1.ballY -= ny * overlap;
+                        b2.ballX += nx * overlap;
+                        b2.ballY += ny * overlap;
+
+                        double vx = b2.VelocityX - b1.VelocityX;
+                        double vy = b2.VelocityY - b1.VelocityY;
+                        double Corelation = vx * nx + vy * ny;
+
+
+                        if (Corelation < 0)
+                        { 
+                            b1.VelocityX += nx * Corelation;
+                            b1.VelocityY += ny * Corelation;
+                            b2.VelocityX -= nx * Corelation;
+                            b2.VelocityY -= ny * Corelation;
+                        }
+                    }
                 }
             }
         }

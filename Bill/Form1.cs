@@ -73,6 +73,7 @@ namespace Bill
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            scene.HandleBallCollisions();
             scene.CheckIfMoving();
             foreach (Ball ball in scene.balls)
             {
@@ -82,6 +83,7 @@ namespace Bill
             {
                 scene.powerUp();
             }
+            
             Invalidate();
         }
     }

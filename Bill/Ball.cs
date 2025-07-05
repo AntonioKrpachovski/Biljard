@@ -98,12 +98,10 @@ namespace Bill
             VelocityX *= 0.98;
             VelocityY *= 0.98;
 
-            if (Math.Abs(VelocityX) <= 0.05)
+            
+            if (Math.Abs(VelocityY) + Math.Abs(VelocityX) <= 0.1)
             {
                 VelocityX = 0;
-            }
-            if (Math.Abs(VelocityY) <= 0.05)
-            {
                 VelocityY = 0;
             }
 
