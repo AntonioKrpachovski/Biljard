@@ -30,10 +30,7 @@ namespace Bill
 
         }
 
-        private void Form1_MouseClick(object sender, MouseEventArgs e)
-        {
-            
-        }
+        private void Form1_MouseClick(object sender, MouseEventArgs e) {}
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
@@ -47,10 +44,7 @@ namespace Bill
             Invalidate();*/
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
+        private void Form1_Load(object sender, EventArgs e) {}
 
         private void Form1_MouseMove(object sender, MouseEventArgs e)
         {
@@ -61,7 +55,7 @@ namespace Bill
         private void Form1_MouseUp(object sender, MouseEventArgs e)
         {
             scene.mouseDown = false;
-            if (!scene.cueBallPlaced) scene.Strike();
+            if (!scene.cueBallPlaced) scene.Strike(mousePos);
         }
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)

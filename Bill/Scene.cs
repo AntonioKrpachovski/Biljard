@@ -21,6 +21,7 @@ namespace Bill
         public int BlankSpaceHeight;
         public int konstantaHeight;
         public int konstantaWidth;
+        public int radius = 16;
         public Point[] points;
         public Point[] quarterPoints;
 
@@ -89,27 +90,26 @@ namespace Bill
 
             Point TopLeft = points[0];
 
-            int BallRadius = 16;
             double BallX = TopLeft.X+TableWidth*0.7;
             double BallY = TopLeft.Y + TableHeight/2;
 
             double InitialBallY = BallY;
 
-            int konstantaNaPomestuvanje = (int)(BallRadius * Math.Sqrt(3))+3;
+            int konstantaNaPomestuvanje = (int)(radius * Math.Sqrt(3))+3;
             int counter = 1;
             for(int i=1; i<= 5; i++)
             {
                 
                 for (int j = 0; j < i; j++)
                 {
-                    balls.Add(new Ball(BallX, BallY, counter, BallRadius, points));
+                    balls.Add(new Ball(BallX, BallY, counter, radius, points));
                     counter++;
-                    BallY = BallY - 2 * BallRadius;
+                    BallY = BallY - 2 * radius;
                 }
-                BallY = InitialBallY + BallRadius * i;
+                BallY = InitialBallY + radius * i;
                 BallX += konstantaNaPomestuvanje;
             }
-            balls.Add(new Ball(TopLeft.X + TableWidth / 6, InitialBallY, 16, BallRadius, points));
+            balls.Add(new Ball(0, 0, 16, radius, points));
             balls[15].fallen = true;
         }
 
@@ -118,16 +118,16 @@ namespace Bill
             Ball cueBall = balls[15];
             if (cueBall.fallen && !cueBallPlaced)
             {
-                if (!IsPlacable(mousePos, cueBall.radius))
+                if (!IsPlacable(mousePos))
                 {
                     return false;
                 }
                 if (firstHit)
                 {
-                    if (mousePos.X + cueBall.radius > points[0].X &&
-                        mousePos.X + cueBall.radius < quarterPoints[1].X
-                        && mousePos.Y + cueBall.radius > points[0].Y
-                        && mousePos.Y + cueBall.radius < quarterPoints[1].Y)
+                    if (mousePos.X + radius > points[0].X &&
+                        mousePos.X + radius < quarterPoints[1].X
+                        && mousePos.Y + radius > points[0].Y
+                        && mousePos.Y + radius < quarterPoints[1].Y)
                     {
                         cueBall.ballX = mousePos.X;
                         cueBall.ballY = mousePos.Y;
@@ -148,12 +148,31 @@ namespace Bill
             return false;
         }
 
-        public bool IsPlacable(Point mousePos, int radius)
+        public bool IsOnTable(Point mousePos)
+        {
+            return mousePos.X > points[0].X - holes[0].radius * 2 &&
+                    mousePos.X < points[3].X + holes[0].radius * 2 &&
+                    mousePos.Y > points[0].Y - holes[0].radius * 2 &&
+                    mousePos.Y < points[3].Y + holes[0].radius * 2;
+        }
+
+        public bool IsPlacable(Point mousePos)
         {
             foreach (Hole hole in holes)
             {
-                if (((mousePos.X - hole.holeX) * (mousePos.X - hole.holeX) + (mousePos.Y - hole.holeY) * (mousePos.Y - hole.holeY) <= 4 * radius * hole.radius))
+                if ((mousePos.X - hole.holeX) * (mousePos.X - hole.holeX) + (mousePos.Y - hole.holeY) * (mousePos.Y - hole.holeY) <= 4 * radius * hole.radius)
                     return false;
+            }
+
+            if (firstHit)
+            {
+                if (!(mousePos.X + radius > points[0].X &&
+                    mousePos.X + radius < quarterPoints[1].X
+                    && mousePos.Y + radius > points[0].Y
+                    && mousePos.Y + radius < quarterPoints[1].Y))
+                {
+                    return false;
+                }
             }
 
             foreach (Ball ball in balls)
@@ -173,22 +192,23 @@ namespace Bill
 
         public bool CollidesWith(Ball b1, Ball b2)
         {
-            return !((b1.ballX - b2.ballX) * (b1.ballX - b2.ballX) + (b1.ballY - b2.ballY) * (b1.ballY - b2.ballY) <= 4 * b1.radius * b2.radius);
+            return !((b1.ballX - b2.ballX) * (b1.ballX - b2.ballX) + (b1.ballY - b2.ballY) * (b1.ballY - b2.ballY) <= 4 * radius * radius);
         }
 
-        public void resizeBalls()
-        {
-            
-            foreach (Ball ball in balls)
-            {
-                int BallRadius = (int)((TableWidth + TableHeight) *0.015);
-                ball.radius = BallRadius;
-            }
-        }
+        //public void resizeBalls()
+        //{
+        //    foreach (Ball ball in balls)
+        //    {
+        //        int BallRadius = (int)((TableWidth + TableHeight) *0.015);
+        //        ball.radius = BallRadius;
+        //    }
+        //}
+
         public void Draw(Graphics g, Point mousePos)
         {
             DrawTable(g);
             DrawBalls(g);
+            DrawGhostBall(g, mousePos);
             DrawCue(g, mousePos);
         }
 
@@ -199,6 +219,7 @@ namespace Bill
                 if (!ball.fallen) ball.Draw(g);
             }
         }
+
         public void DrawTable(Graphics g)
         {
             
@@ -249,16 +270,35 @@ namespace Bill
             bBrown.Dispose();
            
         }
+
+        public void DrawGhostBall(Graphics g, Point mousePos)
+        {
+            if (balls[15].fallen && !moving && !mouseDown)
+            {
+                if (IsOnTable(mousePos))
+                {
+                    Pen linePen;
+                    if (IsPlacable(mousePos))
+                    {
+                        linePen = new Pen(Color.White, 3);
+                    }
+                    else
+                    {
+                        linePen = new Pen(Color.Red, 3);
+                    }
+                    linePen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+                    g.DrawEllipse(linePen, mousePos.X - radius, mousePos.Y - radius, radius * 2, radius * 2);
+
+                    linePen.Dispose();
+                }
+            }
+        }
+
         public void DrawCue(Graphics g, Point mousePos)
         {
-            if (moving)
-            {
-                return;
-            }
-
             Ball cueBall = balls[15];
 
-            if (cueBall.fallen)
+            if (moving || cueBall.fallen)
             {
                 return;
             }
@@ -319,18 +359,18 @@ namespace Bill
 
             PointF ghostBall = new PointF((float)guideLinePoint.X + (float)(nx * 20), (float)guideLinePoint.Y + (float)(ny * 20));
 
-            if (!((currentPos.X - cueBall.ballX) * (currentPos.X - cueBall.ballX) + (currentPos.Y - cueBall.ballY) * (currentPos.Y - cueBall.ballY) <= 4 * cueBall.radius * cueBall.radius))
+            if (!((currentPos.X - cueBall.ballX) * (currentPos.X - cueBall.ballX) + (currentPos.Y - cueBall.ballY) * (currentPos.Y - cueBall.ballY) <= 4 * radius * radius))
             {
-                while (IsPlacable(new Point((int)ghostBall.X, (int)ghostBall.Y), cueBall.radius))
+                while (IsPlacable(new Point((int)ghostBall.X, (int)ghostBall.Y)))
                 {
-                    ghostBall.X += (float)(nx);
-                    ghostBall.Y += (float)(ny);
+                    ghostBall.X += (float)nx;
+                    ghostBall.Y += (float)ny;
                 }
 
                 Pen linePen = new Pen(Color.White, 3);
                 linePen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
                 g.DrawLine(linePen, guideLinePoint, ghostBall);
-                g.DrawEllipse(linePen, ghostBall.X - cueBall.radius, ghostBall.Y - cueBall.radius, cueBall.radius * 2, cueBall.radius * 2);
+                g.DrawEllipse(linePen, ghostBall.X - radius, ghostBall.Y - radius, radius * 2, radius * 2);
 
                 linePen.Dispose();
             }
@@ -338,9 +378,9 @@ namespace Bill
             tipPen.Dispose();
             basePen.Dispose();
         }
-        public void Strike()
+        public void Strike(Point mousePos)
         {
-            if (moving) { // staveno samo poradi power=0, prethodno ako kliknes za vreme na dvizenje togas power se setira na 0 i pravi problem
+            if (moving) { //staveno samo poradi power=0, prethodno ako kliknes za vreme na dvizenje togas power se setira na 0 i pravi problem
                 return;
             }
 
@@ -397,7 +437,7 @@ namespace Bill
                     double dx = b2.ballX - b1.ballX;
                     double dy = b2.ballY - b1.ballY;
                     double distance = Math.Sqrt(dx * dx + dy * dy);
-                    double collisionDistance = b1.radius + b2.radius;
+                    double collisionDistance = radius + radius;
 
                     if (distance < collisionDistance && distance > 0.01)
                     {
