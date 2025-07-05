@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,6 +31,10 @@ namespace Bill
         public int power = 0;
         public bool cueBallPlaced = false;
         public bool firstHit = true;
+
+        public bool whiteBallJustFallen = false;
+        public int failsCounter = 0;
+        public bool gameOverFlag = false;
         public Scene(int ScreenWidth, int ScreenHeight)
         {
             this.ScreenWidth = ScreenWidth;
@@ -210,6 +215,7 @@ namespace Bill
             DrawBalls(g);
             DrawGhostBall(g, mousePos);
             DrawCue(g, mousePos);
+            DrawLives(g);
         }
 
         public void DrawBalls(Graphics g)
@@ -465,6 +471,101 @@ namespace Bill
                         }
                     }
                 }
+            }
+        }
+        public void CheckGameOver()
+        {
+            bool flag = true;
+            foreach (Ball ball in balls)
+            {
+                if (ball == balls[7])
+                {
+                    continue;
+                }
+                if (!ball.fallen)
+                {
+                    flag = false;
+                }
+
+            }
+            if (balls[7].fallen && !flag && !gameOverFlag)
+            {
+                MessageBox.Show("RABOTI!!!");
+                gameOverFlag = true;
+                
+
+            }
+
+            if (balls[7].fallen && balls[15].fallen && !gameOverFlag)
+            {
+                MessageBox.Show("RABOTI DEKAM I CRNA I BELA SE PADNATI!!!");
+                gameOverFlag = true;
+                
+            }
+
+            if (balls[7].fallen && flag && !gameOverFlag)
+            {
+                MessageBox.Show("Pobedi!");
+                gameOverFlag = true;
+                
+            }
+            if (balls[15].fallen && !whiteBallJustFallen)
+            {
+                whiteBallJustFallen = true;
+                failsCounter++;
+
+                if (failsCounter >= 4 && !gameOverFlag)
+                {
+                    MessageBox.Show("Како успеа 3 пати белата топка да ја внeсеш???!");
+                    gameOverFlag = true;
+                    
+                }
+            }
+            else if (!balls[15].fallen && whiteBallJustFallen)
+            {
+                whiteBallJustFallen = false;
+            }
+            
+        }
+        public void DrawHeart(Graphics g, int x, int y, int size)
+        {
+            //Направено со ChatGPT
+
+            Brush brush = new SolidBrush(Color.Red);
+            GraphicsPath path = new GraphicsPath();
+
+            float width = size;
+            float height = size;
+
+            // Left arc
+            path.AddArc(x, y, width / 2, height / 2, 125, 225);
+
+            // Right arc
+            path.AddArc(x + width / 2, y, width / 2, height / 2, 190, 225);
+
+            // Bottom point
+            PointF bottom = new PointF(x + width / 2, y + height - 5);
+            path.AddLine(path.GetLastPoint(), bottom);
+            path.CloseFigure();
+
+            g.FillPath(brush, path);
+        }
+        public void DrawLives(Graphics g)
+        {
+            if (failsCounter == 1)
+            {
+                DrawHeart(g, 30, 645, 50);
+                DrawHeart(g, 90, 645, 50);
+                DrawHeart(g, 150, 645, 50);
+            }
+            if (failsCounter == 2)
+            {
+                DrawHeart(g, 30, 645, 50);
+                DrawHeart(g, 90, 645, 50);
+            }
+            if (failsCounter == 3)
+            {
+                DrawHeart(g, 30, 645, 50);
             }
         }
     }

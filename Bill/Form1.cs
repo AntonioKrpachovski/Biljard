@@ -69,6 +69,7 @@ namespace Bill
         {
             scene.HandleBallCollisions();
             scene.CheckIfMoving();
+            scene.CheckGameOver();
             foreach (Ball ball in scene.balls)
             {
                 ball.Move();
@@ -77,7 +78,11 @@ namespace Bill
             {
                 scene.powerUp();
             }
-            
+            if (scene.gameOverFlag)
+            {
+                this.Close();
+            }
+
             Invalidate();
         }
     }
