@@ -14,8 +14,8 @@ namespace Bill
     {
         public Scene scene;
         public Point mousePos;
-        public int time;
-        
+        public int time = 900;
+        public bool timeFlag = false;
         public Form1()
         {
             
@@ -71,7 +71,7 @@ namespace Bill
         {
             scene.HandleBallCollisions();
             scene.CheckIfMoving();
-            scene.CheckGameOver();
+            scene.CheckGameOver(timeFlag);
             foreach (Ball ball in scene.balls)
             {
                 ball.Move();
@@ -84,7 +84,7 @@ namespace Bill
             {
                 this.Close();
             }
-
+            CalculateScore();
             Invalidate();
         }
 
@@ -94,23 +94,29 @@ namespace Bill
             {
                 timer2.Stop();
             }
-            time += 1;
-            int seconds = time % 60;
-            int minutes = time / 60;
-            StringBuilder sbSeconds = new StringBuilder();
-            if (seconds < 10)
+            if (time > 0)
             {
-                sbSeconds.Append("0");
+                time -= 1;
+                int seconds = time % 60;
+                int minutes = time / 60;
+                StringBuilder sbSeconds = new StringBuilder();
+                if (seconds < 10)
+                {
+                    sbSeconds.Append("0");
+                }
+                sbSeconds.Append(seconds.ToString());
+                StringBuilder sbMinutes = new StringBuilder();
+                if (minutes < 10)
+                {
+                    sbMinutes.Append("0");
+                }
+                sbMinutes.Append(minutes.ToString());
+                TimeLabel.Text = sbMinutes.ToString() + ":" + sbSeconds.ToString();
             }
-            sbSeconds.Append(seconds.ToString());
-            StringBuilder sbMinutes = new StringBuilder();
-            if (minutes < 10)
+            if (time == 0)
             {
-                sbMinutes.Append("0");
+                timeFlag = true;
             }
-            sbMinutes.Append(minutes.ToString());
-            TimeLabel.Text = sbMinutes.ToString() + ":" + sbSeconds.ToString();
-            
         }
 
         private void changeBgColor_Click(object sender, EventArgs e)
@@ -133,5 +139,18 @@ namespace Bill
             }
             Invalidate();
         }
+        private void CalculateScore()
+        {
+            int fallenScore = 0;
+            for (int i = 0; i < 15; i++) {
+                if (scene.balls[i].fallen)
+                {
+                    fallenScore += 100;
+                }
+            }
+            int score = (4 - scene.failsCounter) * 1000 + time + fallenScore;
+            ScoreLabel.Text = "Score: " + score.ToString();
+         }
     }
+    
 }

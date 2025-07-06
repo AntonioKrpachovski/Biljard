@@ -37,7 +37,7 @@ namespace Bill
         public bool gameOverFlag = false;
         public bool ball8Fallen = false;
         public bool DarkMode = false;
-
+        public bool messageFlag = true;
         public Scene(int ScreenWidth, int ScreenHeight)
         {
             this.ScreenWidth = ScreenWidth;
@@ -515,61 +515,69 @@ namespace Bill
                 }
             }
         }
-        public void CheckGameOver()
+        public void CheckGameOver(bool timeFlag)
         {
-            bool flag = true;
-            
-            foreach (Ball ball in balls)
+
+            if (timeFlag && messageFlag)
             {
-                if (ball == balls[7])
+                messageFlag = false;
+                MessageBox.Show("Vremeto isteche");
+                gameOverFlag = true;
+            }
+            bool flag = true;
+
+            for (int i = 0; i < 15; i++)
+            {
+                if (i == 7)
                 {
                     continue;
                 }
-                if (!ball.fallen)
+                if (!balls[i].fallen)
                 {
                     flag = false;
                 }
 
             }
 
-            if (!moving) { 
-            if (balls[7].fallen && balls[15].fallen && !gameOverFlag && !ball8Fallen)
+            if (!moving)
             {
-                ball8Fallen = true;
-                MessageBox.Show("RABOTI DEKAM I CRNA I BELA SE PADNATI!!!");
-                gameOverFlag = true;
-                
-            }
-            if (balls[7].fallen && !flag && !gameOverFlag && !ball8Fallen)
-            {
-                ball8Fallen = true;
-                MessageBox.Show("RABOTI!!!");
-                gameOverFlag = true;
-            }
-
-            if (balls[7].fallen && flag && !gameOverFlag && !ball8Fallen)
-            {
-                ball8Fallen = true;
-                MessageBox.Show("Pobedi!");
-                gameOverFlag = true;
-                
-            }
-            if (balls[15].fallen && !whiteBallJustFallen)
-            {
-                whiteBallJustFallen = true;
-                failsCounter++;
-
-                if (failsCounter >= 4 && !gameOverFlag)
+                if (balls[7].fallen && balls[15].fallen && !gameOverFlag && !ball8Fallen)
                 {
-                    MessageBox.Show("Како успеа 3 пати белата топка да ја внeсеш???!");
+                    ball8Fallen = true;
+                    MessageBox.Show("RABOTI DEKAM I CRNA I BELA SE PADNATI!!!");
                     gameOverFlag = true;
-                    
+
                 }
-            }
-            else if (!balls[15].fallen && whiteBallJustFallen)
-            {
-                whiteBallJustFallen = false;
-            }
+                if (balls[7].fallen && !flag && !gameOverFlag && !ball8Fallen)
+                {
+                    ball8Fallen = true;
+                    MessageBox.Show("RABOTI!!!");
+                    gameOverFlag = true;
+                }
+
+                if (balls[7].fallen && flag && !gameOverFlag && !ball8Fallen)
+                {
+                    ball8Fallen = true;
+                    MessageBox.Show("Pobedi!");
+                    gameOverFlag = true;
+
+                }
+                if (balls[15].fallen && !whiteBallJustFallen)
+                {
+                    whiteBallJustFallen = true;
+                    failsCounter++;
+
+                    if (failsCounter >= 4 && !gameOverFlag)
+                    {
+                        MessageBox.Show("Како успеа 3 пати белата топка да ја внeсеш???!");
+                        gameOverFlag = true;
+
+                    }
+                }
+                else if (!balls[15].fallen && whiteBallJustFallen)
+                {
+                    whiteBallJustFallen = false;
+                }
             }
         }
         public void DrawHeart(Graphics g, int x, int y, int size)
