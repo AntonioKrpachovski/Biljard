@@ -35,6 +35,7 @@ namespace Bill
         public bool whiteBallJustFallen = false;
         public int failsCounter = 0;
         public bool gameOverFlag = false;
+        public bool ball8Fallen = false;
         public Scene(int ScreenWidth, int ScreenHeight)
         {
             this.ScreenWidth = ScreenWidth;
@@ -45,7 +46,7 @@ namespace Bill
             this.BlankSpaceWidth = (int)(ScreenWidth * 0.15);
             this.BlankSpaceHeight = (int)(ScreenHeight * 0.2);
 
-            this.konstantaHeight = 30; //const za poramnuvanje
+            this.konstantaHeight = 18; //const za poramnuvanje
             this.konstantaWidth = 10;
 
 
@@ -123,7 +124,7 @@ namespace Bill
             Ball cueBall = balls[15];
             if (cueBall.fallen && !cueBallPlaced)
             {
-                if (!IsPlacable(mousePos))
+                if (!IsPlacable(mousePos) || moving)
                 {
                     return false;
                 }
@@ -211,7 +212,9 @@ namespace Bill
 
         public void Draw(Graphics g, Point mousePos)
         {
+            
             DrawTable(g);
+            DisplayFallen(g);
             DrawBalls(g);
             DrawGhostBall(g, mousePos);
             DrawCue(g, mousePos);
@@ -220,9 +223,13 @@ namespace Bill
 
         public void DrawBalls(Graphics g)
         {
-            foreach (Ball ball in balls)
+            for (int i=0; i<15; i++)
             {
-                if (!ball.fallen) ball.Draw(g);
+                balls[i].Draw(g);
+            }
+            if (!balls[15].fallen)
+            {
+                balls[15].Draw(g);
             }
         }
 
@@ -279,6 +286,10 @@ namespace Bill
 
         public void DrawGhostBall(Graphics g, Point mousePos)
         {
+            if (gameOverFlag || moving || failsCounter == 4)
+            {
+                return;
+            }
             if (balls[15].fallen && !moving && !mouseDown)
             {
                 if (IsOnTable(mousePos))
@@ -304,7 +315,7 @@ namespace Bill
         {
             Ball cueBall = balls[15];
 
-            if (moving || cueBall.fallen)
+            if (moving || cueBall.fallen || gameOverFlag)
             {
                 return;
             }
@@ -476,6 +487,7 @@ namespace Bill
         public void CheckGameOver()
         {
             bool flag = true;
+            
             foreach (Ball ball in balls)
             {
                 if (ball == balls[7])
@@ -488,23 +500,25 @@ namespace Bill
                 }
 
             }
-            if (balls[7].fallen && !flag && !gameOverFlag)
-            {
-                MessageBox.Show("RABOTI!!!");
-                gameOverFlag = true;
-                
 
-            }
-
-            if (balls[7].fallen && balls[15].fallen && !gameOverFlag)
+            if (!moving) { 
+            if (balls[7].fallen && balls[15].fallen && !gameOverFlag && !ball8Fallen)
             {
+                ball8Fallen = true;
                 MessageBox.Show("RABOTI DEKAM I CRNA I BELA SE PADNATI!!!");
                 gameOverFlag = true;
                 
             }
-
-            if (balls[7].fallen && flag && !gameOverFlag)
+            if (balls[7].fallen && !flag && !gameOverFlag && !ball8Fallen)
             {
+                ball8Fallen = true;
+                MessageBox.Show("RABOTI!!!");
+                gameOverFlag = true;
+            }
+
+            if (balls[7].fallen && flag && !gameOverFlag && !ball8Fallen)
+            {
+                ball8Fallen = true;
                 MessageBox.Show("Pobedi!");
                 gameOverFlag = true;
                 
@@ -525,7 +539,7 @@ namespace Bill
             {
                 whiteBallJustFallen = false;
             }
-            
+            }
         }
         public void DrawHeart(Graphics g, int x, int y, int size)
         {
@@ -554,19 +568,66 @@ namespace Bill
         {
             if (failsCounter == 1)
             {
-                DrawHeart(g, 30, 645, 50);
-                DrawHeart(g, 90, 645, 50);
-                DrawHeart(g, 150, 645, 50);
+                DrawHeart(g, 25, 15, 50);
+                DrawHeart(g, 85, 15, 50);
+                DrawHeart(g, 145, 15, 50);
             }
             if (failsCounter == 2)
             {
-                DrawHeart(g, 30, 645, 50);
-                DrawHeart(g, 90, 645, 50);
+                DrawHeart(g, 25, 15, 50);
+                DrawHeart(g, 85, 15, 50);
             }
             if (failsCounter == 3)
             {
-                DrawHeart(g, 30, 645, 50);
+                DrawHeart(g, 25, 15, 50);
+            }
+        }
+        public void DisplayFallen(Graphics g)
+        {
+            
+            for(int i=0; i<15; i++)
+            {
+                if (balls[i].fallen)
+                {
+                    if (i < 7) 
+                    { 
+                    balls[i].ballX = points[1].X - radius*(7-i)*2*1.4 ;
+                    }
+                    else if(i == 7)
+                    {
+                        balls[i].ballX = points[1].X;
+                    }
+                    else
+                    {
+                        balls[i].ballX = points[1].X + (i-7) * radius*2*1.4;
+                    }
+                    balls[i].ballY = 670;
+                    balls[i].VelocityX = 0;
+                    balls[i].VelocityY = 0;
+                }
+                else
+                {
+                    Brush b = new SolidBrush(Color.LightGray);
+                    if (i < 7)
+                    {
+                        PointF placeholder = new PointF((float)(points[1].X - radius * (7 - i) * 2 * 1.4), 670);
+                        g.FillEllipse(b, placeholder.X-radius, placeholder.Y-radius, radius * 2, radius * 2);
+                    }
+                    else if (i == 7)
+                    {
+                        PointF placeholder = new PointF((float)(points[1].X), 670);
+                        g.FillEllipse(b, placeholder.X - radius, placeholder.Y - radius, radius * 2, radius * 2);
+                    }
+                    else
+                    {
+                        PointF placeholder = new PointF((float)(points[1].X + (i - 7) * radius * 2 * 1.4), 670);
+                        g.FillEllipse(b, placeholder.X - radius, placeholder.Y - radius, radius * 2, radius * 2);
+                    }
+
+                    b.Dispose();
+                }
+            }
             }
         }
     }
-}
+

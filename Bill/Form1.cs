@@ -14,6 +14,7 @@ namespace Bill
     {
         public Scene scene;
         public Point mousePos;
+        public int time;
         
         public Form1()
         {
@@ -27,6 +28,7 @@ namespace Bill
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false; // disables maximize button, napraveno so pomosh na ChatGPT
             timer1.Start();
+            timer2.Start();
 
         }
 
@@ -84,6 +86,31 @@ namespace Bill
             }
 
             Invalidate();
+        }
+
+        private void timer2_Tick(object sender, EventArgs e)
+        {
+            if (scene.failsCounter >= 4)
+            {
+                timer2.Stop();
+            }
+            time += 1;
+            int seconds = time % 60;
+            int minutes = time / 60;
+            StringBuilder sbSeconds = new StringBuilder();
+            if (seconds < 10)
+            {
+                sbSeconds.Append("0");
+            }
+            sbSeconds.Append(seconds.ToString());
+            StringBuilder sbMinutes = new StringBuilder();
+            if (minutes < 10)
+            {
+                sbMinutes.Append("0");
+            }
+            sbMinutes.Append(minutes.ToString());
+            TimeLabel.Text = sbMinutes.ToString() + ":" + sbSeconds.ToString();
+            
         }
     }
 }
