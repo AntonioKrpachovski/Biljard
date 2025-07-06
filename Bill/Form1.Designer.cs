@@ -32,6 +32,7 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.TimeLabel = new System.Windows.Forms.Label();
+            this.changeBgColor = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // timer1
@@ -47,18 +48,32 @@
             // TimeLabel
             // 
             this.TimeLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TimeLabel.Location = new System.Drawing.Point(1159, 9);
+            this.TimeLabel.Location = new System.Drawing.Point(1545, 11);
+            this.TimeLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.TimeLabel.Name = "TimeLabel";
-            this.TimeLabel.Size = new System.Drawing.Size(113, 45);
+            this.TimeLabel.Size = new System.Drawing.Size(151, 55);
             this.TimeLabel.TabIndex = 0;
             this.TimeLabel.Text = "00:00";
             // 
+            // changeBgColor
+            // 
+            this.changeBgColor.Location = new System.Drawing.Point(1539, 69);
+            this.changeBgColor.Name = "changeBgColor";
+            this.changeBgColor.Size = new System.Drawing.Size(157, 56);
+            this.changeBgColor.TabIndex = 1;
+            this.changeBgColor.Text = "Change Theme";
+            this.changeBgColor.UseVisualStyleBackColor = true;
+            this.changeBgColor.Click += new System.EventHandler(this.changeBgColor_Click);
+            // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1284, 711);
+            this.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.ClientSize = new System.Drawing.Size(1712, 875);
+            this.Controls.Add(this.changeBgColor);
             this.Controls.Add(this.TimeLabel);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
@@ -78,6 +93,7 @@
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Timer timer2;
         private System.Windows.Forms.Label TimeLabel;
+        private System.Windows.Forms.Button changeBgColor;
     }
 }
 

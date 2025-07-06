@@ -112,5 +112,26 @@ namespace Bill
             TimeLabel.Text = sbMinutes.ToString() + ":" + sbSeconds.ToString();
             
         }
+
+        private void changeBgColor_Click(object sender, EventArgs e)
+        {
+            if (BackColor == Color.WhiteSmoke)
+            {
+                scene.DarkMode = true;
+                BackColor = Color.FromArgb(30, 30, 35);
+                changeBgColor.BackColor = Color.FromArgb(54, 52, 69);
+                changeBgColor.ForeColor = Color.WhiteSmoke;
+                TimeLabel.ForeColor = Color.WhiteSmoke;
+            }
+            else
+            {
+                scene.DarkMode = false;
+                BackColor = Color.WhiteSmoke;
+                changeBgColor.BackColor = Color.Gainsboro;
+                changeBgColor.ForeColor = Color.Black;
+                TimeLabel.ForeColor = Color.Black;
+            }
+            Invalidate();
+        }
     }
 }

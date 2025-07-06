@@ -23,7 +23,7 @@ namespace Bill
         public Point[] points { get; set; }
 
 
-        public Color[] colors = {
+        public Color[] colorsLight = new Color[] {
             Color.FromArgb(249, 214, 23),
             Color.FromArgb(32, 32, 185),
             Color.FromArgb(198, 27, 27),
@@ -33,14 +33,33 @@ namespace Bill
             Color.Maroon,
             Color.Black
         };
-        public Ball(double ballX, double ballY, int number, int radius, Point[] points)
+
+        public Color[] colorsDark = new Color[] {
+            Color.FromArgb(255, 224, 52),
+            Color.FromArgb(70, 70, 182),
+            Color.FromArgb(230, 63, 63),
+            Color.FromArgb(164, 81, 205),
+            Color.FromArgb(249, 158, 74),
+            Color.FromArgb(79, 178, 81),
+            Color.FromArgb(155, 22, 44),
+            Color.Black
+        };
+
+        public Ball(double ballX, double ballY, int number, int radius, Point[] points, bool DarkMode)
         {
             this.ballX = ballX;
             this.ballY = ballY;
             Number = number;
             this.radius = radius;
-            if (Number <= 15) { 
-                BaseColor = colors[(Number-1)%8];
+            if (Number <= 15) {
+                if (DarkMode)
+                {
+                    BaseColor = colorsDark[(Number - 1) % 8];
+                }
+                else
+                {
+                    BaseColor = colorsLight[(Number - 1) % 8];
+                }
             }
             else
             {
@@ -49,10 +68,26 @@ namespace Bill
             this.points = points;
         }
 
-        public void Draw(Graphics g)
+        public void Draw(Graphics g, bool DarkMode)
         {
 
             String stringNumber = Number.ToString();
+
+            if (Number <= 15)
+            {
+                if (DarkMode)
+                {
+                    BaseColor = colorsDark[(Number - 1) % 8];
+                }
+                else
+                {
+                    BaseColor = colorsLight[(Number - 1) % 8];
+                }
+            }
+            else
+            {
+                BaseColor = Color.White;
+            }
 
             Brush b = new SolidBrush(BaseColor);
             Brush bString = new SolidBrush(Color.Black);

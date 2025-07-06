@@ -36,6 +36,8 @@ namespace Bill
         public int failsCounter = 0;
         public bool gameOverFlag = false;
         public bool ball8Fallen = false;
+        public bool DarkMode = false;
+
         public Scene(int ScreenWidth, int ScreenHeight)
         {
             this.ScreenWidth = ScreenWidth;
@@ -108,14 +110,14 @@ namespace Bill
                 
                 for (int j = 0; j < i; j++)
                 {
-                    balls.Add(new Ball(BallX, BallY, counter, radius, points));
+                    balls.Add(new Ball(BallX, BallY, counter, radius, points, DarkMode));
                     counter++;
                     BallY = BallY - 2 * radius;
                 }
                 BallY = InitialBallY + radius * i;
                 BallX += konstantaNaPomestuvanje;
             }
-            balls.Add(new Ball(0, 0, 16, radius, points));
+            balls.Add(new Ball(0, 0, 16, radius, points, DarkMode));
             balls[15].fallen = true;
         }
 
@@ -225,22 +227,28 @@ namespace Bill
         {
             for (int i=0; i<15; i++)
             {
-                balls[i].Draw(g);
+                balls[i].Draw(g, DarkMode);
             }
             if (!balls[15].fallen)
             {
-                balls[15].Draw(g);
+                balls[15].Draw(g, DarkMode);
             }
         }
 
         public void DrawTable(Graphics g)
         {
-            
-
-            Brush bGreen = new SolidBrush(Color.DarkGreen);
             Brush bBlack = new SolidBrush(Color.Black);
-            Pen pWhite = new Pen(Color.Green, 2);
-            Brush bBrown = new SolidBrush(Color.FromArgb(91, 52, 21));
+            Pen pWhite;
+            Brush bBrown;
+
+            if (DarkMode)
+            {
+                bBrown = new SolidBrush(Color.FromArgb(80, 77, 140));
+            }
+            else
+            {
+                bBrown = new SolidBrush(Color.FromArgb(91, 52, 21));
+            }
 
             int koef = 50;
             Point[] Edge =
@@ -256,12 +264,25 @@ namespace Bill
             };
             g.FillPolygon(bBrown, Edge);
 
-            foreach(Point point in points)
+            foreach (Point point in points)
             {
-                g.FillEllipse(bBrown, point.X-koef, point.Y-koef, koef*2, koef*2);
+                g.FillEllipse(bBrown, point.X - koef, point.Y - koef, koef * 2, koef * 2);
             }
 
-            g.FillPolygon(bGreen, points);
+            if (DarkMode)
+            {
+                Brush bBlue = new SolidBrush(Color.FromArgb(48, 46, 87));
+                g.FillPolygon(bBlue, points);
+                bBlue.Dispose();
+                pWhite = new Pen(Color.FromArgb(61, 61, 105), 2);
+            }
+            else
+            {
+                Brush bGreen = new SolidBrush(Color.DarkGreen);
+                g.FillPolygon(bGreen, points);
+                bGreen.Dispose();
+                pWhite = new Pen(Color.Green, 2);
+            }
 
             holes = new List<Hole>();
 
@@ -277,11 +298,9 @@ namespace Bill
 
             g.DrawLine(pWhite, quarterPoints[0], quarterPoints[1]);
 
-            bGreen.Dispose();
             bBlack.Dispose();
             pWhite.Dispose();
             bBrown.Dispose();
-           
         }
 
         public void DrawGhostBall(Graphics g, Point mousePos)
@@ -368,10 +387,21 @@ namespace Bill
                 cueBallCenter.Y + (float)(ny * 20)
             );
 
-            Pen tipPen = new Pen(Color.BurlyWood, 7);
-            g.DrawLine(tipPen, tipPoint, midPoint);
+            Pen tipPen;
+            Pen basePen;
 
-            Pen basePen = new Pen(Color.SaddleBrown, 8);
+            if (DarkMode)
+            {
+                tipPen = new Pen(Color.FromArgb(135, 199, 222), 7);
+                basePen = new Pen(Color.FromArgb(82, 125, 164), 8);
+            }
+            else
+            {
+                tipPen = new Pen(Color.BurlyWood, 7);
+                basePen = new Pen(Color.SaddleBrown, 8);
+            }
+
+            g.DrawLine(tipPen, tipPoint, midPoint);
             g.DrawLine(basePen, midPoint, basePoint);
 
             PointF ghostBall = new PointF((float)guideLinePoint.X + (float)(nx * 20), (float)guideLinePoint.Y + (float)(ny * 20));
@@ -416,8 +446,8 @@ namespace Bill
             double nx = dx / length;
             double ny = dy / length;
 
-            cueBall.VelocityX = nx * power * 0.3; // koeficient poradi sto 100 px na sekunda da se dvizi topka, ednostavno ne izgleda dobro :D
-            cueBall.VelocityY = ny * power * 0.3;
+            cueBall.VelocityX = nx * power * 0.35; // koeficient poradi sto 100 px na sekunda da se dvizi topka, ednostavno ne izgleda dobro :D
+            cueBall.VelocityY = ny * power * 0.35;
             power = 0;
         }
         public void CheckIfMoving()
@@ -545,8 +575,17 @@ namespace Bill
         {
             //Направено со ChatGPT
 
-            Brush brush = new SolidBrush(Color.Red);
+            Brush brush;
             GraphicsPath path = new GraphicsPath();
+
+            if (DarkMode)
+            {
+                brush = new SolidBrush(Color.FromArgb(107, 104, 179));
+            }
+            else
+            {
+                brush = new SolidBrush(Color.Red);
+            }
 
             float width = size;
             float height = size;
@@ -607,11 +646,21 @@ namespace Bill
                 }
                 else
                 {
-                    Brush b = new SolidBrush(Color.LightGray);
+                    Brush b;
+
+                    if (DarkMode)
+                    {
+                        b = new SolidBrush(Color.FromArgb(54, 52, 69));
+                    }
+                    else
+                    {
+                        b = new SolidBrush(Color.LightGray);
+                    }
+
                     if (i < 7)
                     {
                         PointF placeholder = new PointF((float)(points[1].X - radius * (7 - i) * 2 * 1.4), 670);
-                        g.FillEllipse(b, placeholder.X-radius, placeholder.Y-radius, radius * 2, radius * 2);
+                        g.FillEllipse(b, placeholder.X - radius, placeholder.Y - radius, radius * 2, radius * 2);
                     }
                     else if (i == 7)
                     {
