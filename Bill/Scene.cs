@@ -48,7 +48,7 @@ namespace Bill
             this.BlankSpaceWidth = (int)(ScreenWidth * 0.15);
             this.BlankSpaceHeight = (int)(ScreenHeight * 0.2);
 
-            this.konstantaHeight = 18; //const za poramnuvanje
+            this.konstantaHeight = 25; //const za poramnuvanje
             this.konstantaWidth = 10;
 
 
@@ -216,6 +216,7 @@ namespace Bill
         {
             
             DrawTable(g);
+            DisplayMiniTable(g);
             DisplayFallen(g);
             DrawBalls(g);
             DrawGhostBall(g, mousePos);
@@ -406,7 +407,7 @@ namespace Bill
 
             PointF ghostBall = new PointF((float)guideLinePoint.X + (float)(nx * 20), (float)guideLinePoint.Y + (float)(ny * 20));
 
-            if (!((currentPos.X - cueBall.ballX) * (currentPos.X - cueBall.ballX) + (currentPos.Y - cueBall.ballY) * (currentPos.Y - cueBall.ballY) <= 4 * radius * radius))
+            if (!((currentPos.X - cueBall.ballX) * (currentPos.X - cueBall.ballX) + (currentPos.Y - cueBall.ballY) * (currentPos.Y - cueBall.ballY) <= 1.6f * 1.6f * radius * radius))
             {
                 while (IsPlacable(new Point((int)ghostBall.X, (int)ghostBall.Y)))
                 {
@@ -417,7 +418,7 @@ namespace Bill
                 Pen linePen = new Pen(Color.White, 3);
                 linePen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
                 g.DrawLine(linePen, guideLinePoint, ghostBall);
-                g.DrawEllipse(linePen, ghostBall.X - radius, ghostBall.Y - radius, radius * 2, radius * 2);
+                g.DrawEllipse(linePen, ghostBall.X - 0.8f * radius, ghostBall.Y - 0.8f * radius, radius * 1.6f, radius * 1.6f);
 
                 linePen.Dispose();
             }
@@ -621,6 +622,51 @@ namespace Bill
                 DrawHeart(g, 25, 15, 50);
             }
         }
+
+        public void DisplayMiniTable(Graphics g)
+        {
+            Brush bEdge;
+            Brush bInside;
+
+            if (DarkMode)
+            {
+                bEdge = new SolidBrush(Color.FromArgb(80, 77, 140));
+                bInside = new SolidBrush(Color.FromArgb(48, 46, 87));
+            }
+            else
+            {
+                bEdge = new SolidBrush(Color.FromArgb(91, 52, 21));
+                bInside = new SolidBrush(Color.DarkGreen);
+            }
+
+            PointF p1 = new PointF((float)(points[1].X - radius * 8 * 2 * 1.4 + 10), 670 - radius * 2);
+            PointF p2 = new PointF((float)(points[1].X + 8 * radius * 2 * 1.4 - 10), 670 - radius * 2);
+            PointF p3 = new PointF((float)(points[1].X + 8 * radius * 2 * 1.4 - 10), 670 + radius * 2);
+            PointF p4 = new PointF((float)(points[1].X - radius * 8 * 2 * 1.4 + 10), 670 + radius * 2);
+
+            PointF[] cornerPoints = new PointF[] { p1, p2, p3, p4 };
+
+            PointF[] miniPoints = new PointF[] {
+                new PointF(p1.X-5, p1.Y+5),
+                new PointF(p1.X+5, p1.Y-5),
+                new PointF(p2.X-5, p2.Y-5),
+                new PointF(p2.X+5, p2.Y+5),
+                new PointF(p3.X+5, p3.Y-5),
+                new PointF(p3.X-5, p3.Y+5),
+                new PointF(p4.X+5, p4.Y+5),
+                new PointF(p4.X-5, p4.Y-5),
+            };
+
+            g.FillPolygon(bEdge, miniPoints);
+
+            g.FillEllipse(bEdge, p1.X - 5.5f, p1.Y - 5.5f, 15, 15);
+            g.FillEllipse(bEdge, p2.X - 10, p2.Y - 5.5f, 15, 15);
+            g.FillEllipse(bEdge, p3.X - 10, p3.Y - 10, 15, 15);
+            g.FillEllipse(bEdge, p4.X - 5.5f, p4.Y - 10, 15, 15);
+
+            g.FillRectangle(bInside, p1.X+5, p1.Y+5, p3.X - p1.X -10, p3.Y - p1.Y -10);
+        }
+
         public void DisplayFallen(Graphics g)
         {
             
@@ -650,28 +696,30 @@ namespace Bill
 
                     if (DarkMode)
                     {
-                        b = new SolidBrush(Color.FromArgb(54, 52, 69));
+                        b = new SolidBrush(Color.FromArgb(61, 61, 105));
                     }
                     else
                     {
-                        b = new SolidBrush(Color.LightGray);
+                        b = new SolidBrush(Color.Green);
                     }
+
+                    PointF placeholder;
 
                     if (i < 7)
                     {
-                        PointF placeholder = new PointF((float)(points[1].X - radius * (7 - i) * 2 * 1.4), 670);
-                        g.FillEllipse(b, placeholder.X - radius, placeholder.Y - radius, radius * 2, radius * 2);
+                        placeholder = new PointF((float)(points[1].X - radius * (7 - i) * 2 * 1.4), 670);
+                        
                     }
                     else if (i == 7)
                     {
-                        PointF placeholder = new PointF((float)(points[1].X), 670);
-                        g.FillEllipse(b, placeholder.X - radius, placeholder.Y - radius, radius * 2, radius * 2);
+                        placeholder = new PointF((float)(points[1].X), 670);
                     }
                     else
                     {
-                        PointF placeholder = new PointF((float)(points[1].X + (i - 7) * radius * 2 * 1.4), 670);
-                        g.FillEllipse(b, placeholder.X - radius, placeholder.Y - radius, radius * 2, radius * 2);
+                        placeholder = new PointF((float)(points[1].X + (i - 7) * radius * 2 * 1.4), 670);
                     }
+
+                    g.FillEllipse(b, placeholder.X - radius * 0.7f, placeholder.Y - radius * 0.7f, radius * 1.4f, radius * 1.4f);
 
                     b.Dispose();
                 }
