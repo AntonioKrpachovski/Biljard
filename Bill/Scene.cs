@@ -31,13 +31,13 @@ namespace Bill
         public int power = 0;
         public bool cueBallPlaced = false;
         public bool firstHit = true;
-
         public bool whiteBallJustFallen = false;
         public int failsCounter = 0;
         public bool gameOverFlag = false;
         public bool ball8Fallen = false;
         public bool DarkMode = false;
         public bool messageFlag = true;
+        public bool GameStarted = false;
         public Scene(int ScreenWidth, int ScreenHeight)
         {
             this.ScreenWidth = ScreenWidth;
@@ -58,7 +58,7 @@ namespace Bill
             Point BottomRight = new Point((int)(TableWidth + BlankSpaceWidth - konstantaWidth), (int)(TableHeight + BlankSpaceHeight - konstantaHeight));
             Point MiddleTop = new Point((int)((TableWidth + BlankSpaceWidth - konstantaWidth) + (ScreenWidth - TableWidth - BlankSpaceWidth - konstantaWidth)) / 2, (int)(ScreenHeight - TableHeight - BlankSpaceHeight - konstantaHeight));
             Point MiddleBottom = new Point((int)((TableWidth + BlankSpaceWidth - konstantaWidth) + (ScreenWidth - TableWidth - BlankSpaceWidth - konstantaWidth)) / 2, (int)(TableHeight + BlankSpaceHeight - konstantaHeight));
-            
+
 
             Point[] tocki =
             {
@@ -85,10 +85,11 @@ namespace Bill
         }
         public void powerUp()
         {
-            if (moving) {
+            if (moving)
+            {
                 return;
             }
-            if(mouseDown && power<100 && !cueBallPlaced)
+            if (mouseDown && power < 100 && !cueBallPlaced)
             {
                 power += 10;
             }
@@ -97,17 +98,18 @@ namespace Bill
         {
 
             Point TopLeft = points[0];
+            balls = new List<Ball>();
 
-            double BallX = TopLeft.X+TableWidth*0.7;
-            double BallY = TopLeft.Y + TableHeight/2;
+            double BallX = TopLeft.X + TableWidth * 0.7;
+            double BallY = TopLeft.Y + TableHeight / 2;
 
             double InitialBallY = BallY;
 
-            int konstantaNaPomestuvanje = (int)(radius * Math.Sqrt(3))+3;
+            int konstantaNaPomestuvanje = (int)(radius * Math.Sqrt(3)) + 3;
             int counter = 1;
-            for(int i=1; i<= 5; i++)
+            for (int i = 1; i <= 5; i++)
             {
-                
+
                 for (int j = 0; j < i; j++)
                 {
                     balls.Add(new Ball(BallX, BallY, counter, radius, points, DarkMode));
@@ -151,7 +153,7 @@ namespace Bill
                     cueBall.ballY = mousePos.Y;
                     cueBall.fallen = false;
                     return true;
-                }  
+                }
             }
             return false;
         }
@@ -214,7 +216,7 @@ namespace Bill
 
         public void Draw(Graphics g, Point mousePos)
         {
-            
+
             DrawTable(g);
             DisplayMiniTable(g);
             DisplayFallen(g);
@@ -226,7 +228,7 @@ namespace Bill
 
         public void DrawBalls(Graphics g)
         {
-            for (int i=0; i<15; i++)
+            for (int i = 0; i < 15; i++)
             {
                 balls[i].Draw(g, DarkMode);
             }
@@ -345,7 +347,7 @@ namespace Bill
             Point currentPos;
 
             if (mouseDown && !cueBallPlaced)
-            { 
+            {
                 currentPos = lastMousePos;
             }
             else
@@ -358,7 +360,7 @@ namespace Bill
             int dy = currentPos.Y - cueBallCenter.Y;
             if (dx == 0 && dy == 0)
             {
-                dx = 1; 
+                dx = 1;
             }
             double length = Math.Sqrt(dx * dx + dy * dy);
 
@@ -428,7 +430,8 @@ namespace Bill
         }
         public void Strike(Point mousePos)
         {
-            if (moving) { //staveno samo poradi power=0, prethodno ako kliknes za vreme na dvizenje togas power se setira na 0 i pravi problem
+            if (moving)
+            { //staveno samo poradi power=0, prethodno ako kliknes za vreme na dvizenje togas power se setira na 0 i pravi problem
                 return;
             }
 
@@ -455,7 +458,8 @@ namespace Bill
         {
             foreach (Ball ball in balls)
             {
-                if (ball.VelocityX != 0 || ball.VelocityY != 0) {
+                if (ball.VelocityX != 0 || ball.VelocityY != 0)
+                {
                     moving = true;
                     return;
                 }
@@ -470,15 +474,15 @@ namespace Bill
             for (int i = 0; i < balls.Count; i++)
             {
                 Ball b1 = balls[i];
-                if (b1.fallen) 
-                { 
+                if (b1.fallen)
+                {
                     continue;
                 }
 
                 for (int j = i + 1; j < balls.Count; j++)
                 {
                     Ball b2 = balls[j];
-                    if (b2.fallen) 
+                    if (b2.fallen)
                     {
                         continue;
                     }
@@ -505,7 +509,7 @@ namespace Bill
 
 
                         if (Corelation < 0)
-                        { 
+                        {
                             b1.VelocityX += nx * Corelation;
                             b1.VelocityY += ny * Corelation;
                             b2.VelocityX -= nx * Corelation;
@@ -515,15 +519,16 @@ namespace Bill
                 }
             }
         }
-        public void CheckGameOver(bool timeFlag)
+        public String CheckGameOver(bool timeFlag)
         {
 
             if (timeFlag && messageFlag)
             {
                 messageFlag = false;
-                MessageBox.Show("Vremeto isteche");
                 gameOverFlag = true;
+                return "Time is up!";
             }
+
             bool flag = true;
 
             for (int i = 0; i < 15; i++)
@@ -539,28 +544,30 @@ namespace Bill
 
             }
 
-            if (!moving)
+            if (!moving && !gameOverFlag)
             {
                 if (balls[7].fallen && balls[15].fallen && !gameOverFlag && !ball8Fallen)
                 {
                     ball8Fallen = true;
-                    MessageBox.Show("RABOTI DEKAM I CRNA I BELA SE PADNATI!!!");
                     gameOverFlag = true;
-
+                    return "Both the 8 ball and cue ball have fallen at the same time!";
                 }
                 if (balls[7].fallen && !flag && !gameOverFlag && !ball8Fallen)
                 {
                     ball8Fallen = true;
-                    MessageBox.Show("RABOTI!!!");
                     gameOverFlag = true;
+                    return "The 8 ball was not the last to fall!";
                 }
 
                 if (balls[7].fallen && flag && !gameOverFlag && !ball8Fallen)
                 {
                     ball8Fallen = true;
-                    MessageBox.Show("Pobedi!");
                     gameOverFlag = true;
-
+                    if (balls[15].fallen)
+                    {
+                        return "Both the 8 ball and cue ball have fallen at the same time!";
+                    }
+                    return "You won!";
                 }
                 if (balls[15].fallen && !whiteBallJustFallen)
                 {
@@ -569,9 +576,8 @@ namespace Bill
 
                     if (failsCounter >= 4 && !gameOverFlag)
                     {
-                        MessageBox.Show("Како успеа 3 пати белата топка да ја внeсеш???!");
                         gameOverFlag = true;
-
+                        return "You've run out of lives!";
                     }
                 }
                 else if (!balls[15].fallen && whiteBallJustFallen)
@@ -579,6 +585,7 @@ namespace Bill
                     whiteBallJustFallen = false;
                 }
             }
+            return "";
         }
         public void DrawHeart(Graphics g, int x, int y, int size)
         {
@@ -672,27 +679,27 @@ namespace Bill
             g.FillEllipse(bEdge, p3.X - 10, p3.Y - 10, 15, 15);
             g.FillEllipse(bEdge, p4.X - 5.5f, p4.Y - 10, 15, 15);
 
-            g.FillRectangle(bInside, p1.X+5, p1.Y+5, p3.X - p1.X -10, p3.Y - p1.Y -10);
+            g.FillRectangle(bInside, p1.X + 5, p1.Y + 5, p3.X - p1.X - 10, p3.Y - p1.Y - 10);
         }
 
         public void DisplayFallen(Graphics g)
         {
-            
-            for(int i=0; i<15; i++)
+
+            for (int i = 0; i < 15; i++)
             {
                 if (balls[i].fallen)
                 {
-                    if (i < 7) 
-                    { 
-                    balls[i].ballX = points[1].X - radius*(7-i)*2*1.4 ;
+                    if (i < 7)
+                    {
+                        balls[i].ballX = points[1].X - radius * (7 - i) * 2 * 1.4;
                     }
-                    else if(i == 7)
+                    else if (i == 7)
                     {
                         balls[i].ballX = points[1].X;
                     }
                     else
                     {
-                        balls[i].ballX = points[1].X + (i-7) * radius*2*1.4;
+                        balls[i].ballX = points[1].X + (i - 7) * radius * 2 * 1.4;
                     }
                     balls[i].ballY = 670;
                     balls[i].VelocityX = 0;
@@ -716,7 +723,7 @@ namespace Bill
                     if (i < 7)
                     {
                         placeholder = new PointF((float)(points[1].X - radius * (7 - i) * 2 * 1.4), 670);
-                        
+
                     }
                     else if (i == 7)
                     {
@@ -732,7 +739,94 @@ namespace Bill
                     b.Dispose();
                 }
             }
+        }
+
+        public void DrawTitleScreen(Graphics g)
+        {
+            Point[] corners =
+            {
+                new Point(0, 0),
+                new Point(1300, 0),
+                new Point(1300, 750),
+                new Point(0, 750)
+            };
+
+            Point[] tableInside =
+            {
+                corners[2],
+                corners[3],
+                new Point(corners[2].X / 2 - 100, 500),
+                new Point(corners[2].X / 2 + 100, 500),
+            };
+
+            Point[] tableOutside =
+            {
+                new Point(corners[2].X + 210, corners[2].Y),
+                new Point(corners[3].X - 210, corners[3].Y),
+                new Point(corners[2].X / 2 - 130, 480),
+                new Point(corners[2].X / 2 + 130, 480),
+            };
+
+            Point[] holes =
+            {
+                new Point(corners[2].X / 2 - 320, 600),
+                new Point(corners[2].X / 2 + 320, 600),
+            };
+
+            Brush bWhite = new SolidBrush(Color.White);
+            g.FillPolygon(bWhite, corners);
+
+            Brush bBrown = new SolidBrush(Color.FromArgb(91, 52, 21));
+            g.FillPolygon(bBrown, tableOutside);
+
+            Brush bGreen = new SolidBrush(Color.DarkGreen);
+            g.FillPolygon(bGreen, tableInside);
+
+            Brush bBlack = new SolidBrush(Color.Black);
+            foreach (Point point in tableInside)
+            {
+                g.FillEllipse(bBlack, point.X - 25, point.Y - 10, 50, 20);
             }
+            foreach (Point point in holes)
+            {
+                g.FillEllipse(bBlack, point.X - 50, point.Y - 20, 100, 40);
+            }
+
+            g.FillEllipse(bWhite, 600, 600, 100, 100);
+
+            Brush bYellow = new SolidBrush(Color.FromArgb(249, 214, 23));
+            Brush bRed = new SolidBrush(Color.FromArgb(198, 27, 27));
+            Brush bPurple = new SolidBrush(Color.FromArgb(85, 0, 128));
+
+            int x = 520;
+            int y = 540;
+            int r = 21;
+            Font f = new Font("Arial", (float)(r * 0.6), FontStyle.Bold, GraphicsUnit.Pixel);
+
+            g.FillEllipse(bWhite, x - r, y - r, 2 * r, 2 * r);
+            g.FillEllipse(bRed, x - r, y - (float)((r + 8) / 2), 2 * r, r + 8);
+            g.FillEllipse(bWhite, x - (float)(r * 0.5), y - (float)(r * 0.5), r, r);
+            g.DrawString("11", f, bBlack, x - 9, y - 9);
+
+            x = 780;
+            y = 580;
+            r = 30;
+            f = new Font("Arial", (float)(r * 0.6), FontStyle.Bold, GraphicsUnit.Pixel);
+
+            g.FillEllipse(bPurple, x - r, y - r, 2 * r, 2 * r);
+            g.FillEllipse(bWhite, x - (float)(r * 0.5), y - (float)(r * 0.5), r, r);
+            g.DrawString("4", f, bBlack, x - 8, y - 10);
+
+            x = 665;
+            y = 505;
+            r = 15;
+            f = new Font("Arial", (float)(r * 0.6), FontStyle.Bold, GraphicsUnit.Pixel);
+
+            g.FillEllipse(bWhite, 650, 490, 30, 30);
+            g.FillEllipse(bYellow, x - r, y - (float)((r + 8) / 2), 2 * r, r + 8);
+            g.FillEllipse(bWhite, x - (float)(r * 0.5), y - (float)(r * 0.5), r, r);
+            g.DrawString("9", f, bBlack, x - 5, y - 5);
         }
     }
+}
 

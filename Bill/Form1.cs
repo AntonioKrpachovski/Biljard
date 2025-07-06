@@ -32,11 +32,29 @@ namespace Bill
 
         }
 
-        private void Form1_MouseClick(object sender, MouseEventArgs e) {}
+        private void Form1_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (!scene.GameStarted)
+            {
+                scene.GameStarted = true;
+                TimeLabel.Show();
+                changeBgColor.Show();
+                title.Hide();
+                credits.Hide();
+                pressToStart.Hide();
+                Score.Show();
+                ScoreLabel.Show();
+                timer2.Start();
+            }
+        }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
             scene.Draw(e.Graphics, mousePos);
+            if (!scene.GameStarted || scene.gameOverFlag)
+            {
+                scene.DrawTitleScreen(e.Graphics);
+            }
         }
 
         private void Form1_Resize(object sender, EventArgs e)
@@ -46,7 +64,17 @@ namespace Bill
             Invalidate();*/
         }
 
-        private void Form1_Load(object sender, EventArgs e) {}
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            timer2.Stop();
+            TimeLabel.Hide();
+            changeBgColor.Hide();
+            Score.Hide();
+            ScoreLabel.Hide();
+            restart.Hide();
+            quit.Hide();
+            Invalidate();
+        }
 
         private void Form1_MouseMove(object sender, MouseEventArgs e)
         {
@@ -71,7 +99,7 @@ namespace Bill
         {
             scene.HandleBallCollisions();
             scene.CheckIfMoving();
-            scene.CheckGameOver(timeFlag);
+            String text = scene.CheckGameOver(timeFlag);
             foreach (Ball ball in scene.balls)
             {
                 ball.Move();
@@ -82,7 +110,30 @@ namespace Bill
             }
             if (scene.gameOverFlag)
             {
-                this.Close();
+                timer2.Stop();
+                Score.Hide();
+                ScoreLabel.Hide();
+                changeBgColor.Hide();
+                TimeLabel.Hide();
+                title.Show();
+                credits.Show();
+                pressToStart.Show();
+                restart.Show();
+                quit.Show();
+
+                if (text == "You won!")
+                {
+                    pressToStart.Text = "Score: " + (CalculateScore() + 2000).ToString();
+                    title.Text = text;
+                    credits.Text = "Thank you for playing!";
+                }
+                else if (text != "")
+                {
+                    title.Text = "You lost!";
+                    credits.Text = text;
+                    pressToStart.Text = "Score: " + (CalculateScore()).ToString();
+                }
+                
             }
             CalculateScore();
             Invalidate();
@@ -90,10 +141,6 @@ namespace Bill
 
         private void timer2_Tick(object sender, EventArgs e)
         {
-            if (scene.failsCounter >= 4)
-            {
-                timer2.Stop();
-            }
             if (time > 0)
             {
                 time -= 1;
@@ -117,6 +164,10 @@ namespace Bill
             {
                 timeFlag = true;
             }
+            if (scene.gameOverFlag)
+            {
+                timer2.Stop();
+            }
         }
 
         private void changeBgColor_Click(object sender, EventArgs e)
@@ -128,6 +179,9 @@ namespace Bill
                 changeBgColor.BackColor = Color.FromArgb(54, 52, 69);
                 changeBgColor.ForeColor = Color.WhiteSmoke;
                 TimeLabel.ForeColor = Color.WhiteSmoke;
+                ScoreLabel.ForeColor = Color.WhiteSmoke;
+                ScoreLabel.BackColor = Color.FromArgb(54, 52, 69);
+                Score.BackColor = Color.FromArgb(54, 52, 69);
             }
             else
             {
@@ -136,21 +190,63 @@ namespace Bill
                 changeBgColor.BackColor = Color.Gainsboro;
                 changeBgColor.ForeColor = Color.Black;
                 TimeLabel.ForeColor = Color.Black;
+                ScoreLabel.ForeColor = Color.Black;
+                ScoreLabel.BackColor = Color.Gainsboro;
+                Score.BackColor = Color.Gainsboro;
             }
             Invalidate();
         }
-        private void CalculateScore()
+        private int CalculateScore()
         {
             int fallenScore = 0;
             for (int i = 0; i < 15; i++) {
                 if (scene.balls[i].fallen)
                 {
-                    fallenScore += 100;
+                    fallenScore += 200;
                 }
             }
-            int score = (4 - scene.failsCounter) * 1000 + time + fallenScore;
+            int score = (4 - scene.failsCounter) * 1000 + time * 3 + fallenScore - 700;
             ScoreLabel.Text = "Score: " + score.ToString();
+            return score;
          }
+
+        private void quit_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void restart_Click(object sender, EventArgs e)
+        {
+            restart.Hide();
+            quit.Hide();
+            scene.GameStarted = true;
+            scene.gameOverFlag = false;
+            TimeLabel.Show();
+            changeBgColor.Show();
+            title.Hide();
+            credits.Hide();
+            pressToStart.Hide();
+            Score.Show();
+            ScoreLabel.Show();
+            time = 900;
+            TimeLabel.Text = "15:00";
+            timer2.Start();
+            scene.populate();
+            scene.failsCounter = 1;
+
+            scene.mouseDown = false;
+            scene.moving = false;
+            scene.power = 0;
+            scene.cueBallPlaced = false;
+            scene.firstHit = true;
+            scene.whiteBallJustFallen = false;
+            scene.failsCounter = 0;
+            scene.gameOverFlag = false;
+            scene.ball8Fallen = false;
+            scene.messageFlag = true;
+
+            Invalidate();
+        }
     }
     
 }
