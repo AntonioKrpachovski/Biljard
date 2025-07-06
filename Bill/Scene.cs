@@ -106,15 +106,34 @@ namespace Bill
             double InitialBallY = BallY;
 
             int konstantaNaPomestuvanje = (int)(radius * Math.Sqrt(3)) + 3;
+
+            List<int> numbers = new List<int>();
+            for(int i=1; i<16; i++)
+            {
+                numbers.Add(i);
+            }
+            numbers.Remove(8);
+            Random random = new Random();
+
             int counter = 1;
             for (int i = 1; i <= 5; i++)
             {
 
                 for (int j = 0; j < i; j++)
                 {
-                    balls.Add(new Ball(BallX, BallY, counter, radius, points, DarkMode));
-                    counter++;
+                    if(i ==3 && j == 1)
+                    {
+                        balls.Add(new Ball(BallX, BallY, 8, radius, points, DarkMode));
+                        
+                    }
+                    else 
+                    {
+                        int randomNumber = numbers[random.Next(numbers.Count)];
+                        numbers.Remove(randomNumber);
+                        balls.Add(new Ball(BallX, BallY, randomNumber, radius, points, DarkMode));
+                    }
                     BallY = BallY - 2 * radius;
+                    counter++;
                 }
                 BallY = InitialBallY + radius * i;
                 BallX += konstantaNaPomestuvanje;
@@ -531,9 +550,11 @@ namespace Bill
 
             bool flag = true;
 
+            
+
             for (int i = 0; i < 15; i++)
             {
-                if (i == 7)
+                if (i == 4)
                 {
                     continue;
                 }
@@ -546,20 +567,20 @@ namespace Bill
 
             if (!moving && !gameOverFlag)
             {
-                if (balls[7].fallen && balls[15].fallen && !gameOverFlag && !ball8Fallen)
+                if (balls[4].fallen && balls[15].fallen && !gameOverFlag && !ball8Fallen)
                 {
                     ball8Fallen = true;
                     gameOverFlag = true;
                     return "Both the 8 ball and cue ball have fallen at the same time!";
                 }
-                if (balls[7].fallen && !flag && !gameOverFlag && !ball8Fallen)
+                if (balls[4].fallen && !flag && !gameOverFlag && !ball8Fallen)
                 {
                     ball8Fallen = true;
                     gameOverFlag = true;
                     return "The 8 ball was not the last to fall!";
                 }
 
-                if (balls[7].fallen && flag && !gameOverFlag && !ball8Fallen)
+                if (balls[4].fallen && flag && !gameOverFlag && !ball8Fallen)
                 {
                     ball8Fallen = true;
                     gameOverFlag = true;
@@ -684,22 +705,22 @@ namespace Bill
 
         public void DisplayFallen(Graphics g)
         {
-
+            
             for (int i = 0; i < 15; i++)
             {
                 if (balls[i].fallen)
                 {
-                    if (i < 7)
+                    if (balls[i].Number < 8)
                     {
-                        balls[i].ballX = points[1].X - radius * (7 - i) * 2 * 1.4;
+                        balls[i].ballX = points[1].X - radius * (8 - balls[i].Number) * 2 * 1.4;
                     }
-                    else if (i == 7)
+                    else if (balls[i].Number == 8)
                     {
                         balls[i].ballX = points[1].X;
                     }
                     else
                     {
-                        balls[i].ballX = points[1].X + (i - 7) * radius * 2 * 1.4;
+                        balls[i].ballX = points[1].X + (balls[i].Number - 8) * radius * 2 * 1.4;
                     }
                     balls[i].ballY = 670;
                     balls[i].VelocityX = 0;
@@ -720,18 +741,18 @@ namespace Bill
 
                     PointF placeholder;
 
-                    if (i < 7)
+                    if (balls[i].Number < 8)
                     {
-                        placeholder = new PointF((float)(points[1].X - radius * (7 - i) * 2 * 1.4), 670);
+                        placeholder = new PointF((float)(points[1].X - radius * (8 - balls[i].Number) * 2 * 1.4), 670);
 
                     }
-                    else if (i == 7)
+                    else if (balls[i].Number == 8)
                     {
                         placeholder = new PointF((float)(points[1].X), 670);
                     }
                     else
                     {
-                        placeholder = new PointF((float)(points[1].X + (i - 7) * radius * 2 * 1.4), 670);
+                        placeholder = new PointF((float)(points[1].X + (balls[i].Number - 8) * radius * 2 * 1.4), 670);
                     }
 
                     g.FillEllipse(b, placeholder.X - radius * 0.7f, placeholder.Y - radius * 0.7f, radius * 1.4f, radius * 1.4f);

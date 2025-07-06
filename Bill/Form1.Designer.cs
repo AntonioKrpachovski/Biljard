@@ -55,21 +55,20 @@
             // TimeLabel
             // 
             this.TimeLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TimeLabel.Location = new System.Drawing.Point(1545, 11);
-            this.TimeLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.TimeLabel.Location = new System.Drawing.Point(1159, 9);
             this.TimeLabel.Name = "TimeLabel";
-            this.TimeLabel.Size = new System.Drawing.Size(151, 55);
+            this.TimeLabel.Size = new System.Drawing.Size(113, 45);
             this.TimeLabel.TabIndex = 0;
-            this.TimeLabel.Text = "15:00";
+            this.TimeLabel.Text = "20:00";
             // 
             // changeBgColor
             // 
             this.changeBgColor.BackColor = System.Drawing.Color.Gainsboro;
             this.changeBgColor.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.changeBgColor.Location = new System.Drawing.Point(25, 783);
-            this.changeBgColor.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.changeBgColor.Location = new System.Drawing.Point(19, 636);
+            this.changeBgColor.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.changeBgColor.Name = "changeBgColor";
-            this.changeBgColor.Size = new System.Drawing.Size(304, 75);
+            this.changeBgColor.Size = new System.Drawing.Size(228, 61);
             this.changeBgColor.TabIndex = 1;
             this.changeBgColor.Text = "Change Theme";
             this.changeBgColor.UseVisualStyleBackColor = false;
@@ -80,10 +79,9 @@
             this.ScoreLabel.AutoSize = true;
             this.ScoreLabel.BackColor = System.Drawing.Color.Gainsboro;
             this.ScoreLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ScoreLabel.Location = new System.Drawing.Point(1445, 805);
-            this.ScoreLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ScoreLabel.Location = new System.Drawing.Point(1084, 654);
             this.ScoreLabel.Name = "ScoreLabel";
-            this.ScoreLabel.Size = new System.Drawing.Size(96, 32);
+            this.ScoreLabel.Size = new System.Drawing.Size(75, 26);
             this.ScoreLabel.TabIndex = 2;
             this.ScoreLabel.Text = "Score:";
             // 
@@ -91,44 +89,50 @@
             // 
             this.pressToStart.BackColor = System.Drawing.Color.Transparent;
             this.pressToStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.pressToStart.Location = new System.Drawing.Point(-1, 375);
+            this.pressToStart.Location = new System.Drawing.Point(-1, 305);
+            this.pressToStart.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.pressToStart.Name = "pressToStart";
-            this.pressToStart.Size = new System.Drawing.Size(1713, 91);
+            this.pressToStart.Size = new System.Drawing.Size(1285, 74);
             this.pressToStart.TabIndex = 8;
             this.pressToStart.Text = "Click To Start";
             this.pressToStart.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.pressToStart.Click += new System.EventHandler(this.pressToStart_Click);
             // 
             // credits
             // 
             this.credits.BackColor = System.Drawing.Color.Transparent;
             this.credits.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.credits.Location = new System.Drawing.Point(-1, 318);
+            this.credits.Location = new System.Drawing.Point(-1, 258);
+            this.credits.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.credits.Name = "credits";
-            this.credits.Size = new System.Drawing.Size(1713, 36);
+            this.credits.Size = new System.Drawing.Size(1285, 29);
             this.credits.TabIndex = 7;
             this.credits.Text = "Ана Мацановиќ 231178, Антонио Крпачовски 231024, Лина Анѓелковска 231123";
             this.credits.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.credits.Click += new System.EventHandler(this.credits_Click);
             // 
             // title
             // 
             this.title.BackColor = System.Drawing.Color.Transparent;
             this.title.Font = new System.Drawing.Font("Microsoft Sans Serif", 100.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.title.Location = new System.Drawing.Point(-2, 128);
+            this.title.Location = new System.Drawing.Point(-2, 104);
+            this.title.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.title.Name = "title";
-            this.title.Size = new System.Drawing.Size(1714, 190);
+            this.title.Size = new System.Drawing.Size(1286, 154);
             this.title.TabIndex = 6;
             this.title.Text = "Billiard";
             this.title.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.title.Click += new System.EventHandler(this.title_Click);
             // 
             // Score
             // 
             this.Score.BackColor = System.Drawing.Color.Gainsboro;
             this.Score.Enabled = false;
             this.Score.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Score.Location = new System.Drawing.Point(1376, 783);
-            this.Score.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.Score.Location = new System.Drawing.Point(1032, 636);
+            this.Score.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Score.Name = "Score";
-            this.Score.Size = new System.Drawing.Size(304, 75);
+            this.Score.Size = new System.Drawing.Size(228, 61);
             this.Score.TabIndex = 9;
             this.Score.UseVisualStyleBackColor = false;
             // 
@@ -136,10 +140,10 @@
             // 
             this.restart.BackColor = System.Drawing.Color.Gainsboro;
             this.restart.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.restart.Location = new System.Drawing.Point(502, 468);
-            this.restart.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.restart.Location = new System.Drawing.Point(376, 380);
+            this.restart.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.restart.Name = "restart";
-            this.restart.Size = new System.Drawing.Size(304, 75);
+            this.restart.Size = new System.Drawing.Size(228, 61);
             this.restart.TabIndex = 11;
             this.restart.Text = "Play Again";
             this.restart.UseVisualStyleBackColor = false;
@@ -149,10 +153,10 @@
             // 
             this.quit.BackColor = System.Drawing.Color.Gainsboro;
             this.quit.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.quit.Location = new System.Drawing.Point(916, 468);
-            this.quit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.quit.Location = new System.Drawing.Point(687, 380);
+            this.quit.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.quit.Name = "quit";
-            this.quit.Size = new System.Drawing.Size(304, 75);
+            this.quit.Size = new System.Drawing.Size(228, 61);
             this.quit.TabIndex = 12;
             this.quit.Text = "Quit Game";
             this.quit.UseVisualStyleBackColor = false;
@@ -160,20 +164,19 @@
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.ClientSize = new System.Drawing.Size(1712, 875);
-            this.Controls.Add(this.quit);
-            this.Controls.Add(this.restart);
+            this.ClientSize = new System.Drawing.Size(1284, 711);
             this.Controls.Add(this.pressToStart);
             this.Controls.Add(this.credits);
             this.Controls.Add(this.title);
+            this.Controls.Add(this.quit);
+            this.Controls.Add(this.restart);
             this.Controls.Add(this.ScoreLabel);
             this.Controls.Add(this.changeBgColor);
             this.Controls.Add(this.TimeLabel);
             this.Controls.Add(this.Score);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Billiard";

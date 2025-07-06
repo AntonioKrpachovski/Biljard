@@ -14,7 +14,7 @@ namespace Bill
     {
         public Scene scene;
         public Point mousePos;
-        public int time = 900;
+        public int time = 1200;
         public bool timeFlag = false;
         public Form1()
         {
@@ -29,10 +29,11 @@ namespace Bill
             this.MaximizeBox = false; // disables maximize button, napraveno so pomosh na ChatGPT
             timer1.Start();
             timer2.Start();
+            
+            
 
         }
-
-        private void Form1_MouseClick(object sender, MouseEventArgs e)
+        private void startGame()
         {
             if (!scene.GameStarted)
             {
@@ -46,6 +47,10 @@ namespace Bill
                 ScoreLabel.Show();
                 timer2.Start();
             }
+        }
+        private void Form1_MouseClick(object sender, MouseEventArgs e)
+        {
+            startGame();
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
@@ -246,6 +251,21 @@ namespace Bill
             scene.messageFlag = true;
 
             Invalidate();
+        }
+
+        private void title_Click(object sender, EventArgs e)
+        {
+            startGame();
+        }
+
+        private void credits_Click(object sender, EventArgs e)
+        {
+            startGame();
+        }
+
+        private void pressToStart_Click(object sender, EventArgs e)
+        {
+            startGame();
         }
     }
     
